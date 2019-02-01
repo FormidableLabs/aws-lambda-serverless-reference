@@ -1,0 +1,9 @@
+{
+  "name": "aws-lambda-serverless-reference",
+  "version": "0.0.1",
+  "description": "A reference application for AWS + serverless framework.",
+  "main": "index.js",
+  "repository": "https://github.com/FormidableLabs/aws-lambda-serverless-reference",
+  "author": "Ryan Roemer <ryan.roemer@formidable.com>",
+  "license": "MIT"
+}
