@@ -3,15 +3,16 @@
 // TODO: const { setLogger } = require("aws-xray-sdk-core"); // Xray
 // TODO: const xrayExpress = require("aws-xray-sdk-express"); // Xray
 const express = require("express");
-const bodyParser = require("body-parser");
 
-const PORT = parseInt(process.env.SERVER_PORT || 3000, 10);
+const DEFAULT_PORT = 3000;
+const PORT = parseInt(process.env.SERVER_PORT || DEFAULT_PORT, 10);
 const HOST = process.env.SERVER_HOST || "0.0.0.0";
-const STAGE = process.env.STAGE || process.env.NODE_ENV || "localdev";
-const SERVICE_NAME = process.env.SERVICE_NAME;
-const SERVICE = `${SERVICE_NAME}-${STAGE}`;
+// TODO(Xray)
+// const STAGE = process.env.STAGE || process.env.NODE_ENV || "localdev";
+// const SERVICE_NAME = process.env.SERVICE_NAME;
+// const SERVICE = `${SERVICE_NAME}-${STAGE}`;
 
-// TODO: // Xray: Log xray locally.
+// TODO(Xray): Log xray locally.
 // if (STAGE === "localdev") {
 //   setLogger(console);
 // }
@@ -53,7 +54,8 @@ module.exports.handler = (event, context, callback) => {
 
 // DOCKER/DEV/ANYTHING: Start the server directly.
 if (require.main === module) {
-  const server = app.listen({ port: PORT, host: HOST }, () => {
+  const server = app.listen({ port: PORT,
+    host: HOST }, () => {
     const { address, port } = server.address();
 
     // eslint-disable-next-line no-console

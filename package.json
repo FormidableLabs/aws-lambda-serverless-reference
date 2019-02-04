@@ -8,6 +8,8 @@
   "license": "MIT",
   "scripts": {
     "env": "echo export STAGE=${STAGE:-localdev}; echo export SERVICE_NAME=simple-reference; echo export AWS_REGION=${AWS_REGION:-us-east-1}; echo export AWS_XRAY_CONTEXT_MISSING=LOG_ERROR",
+    "lint": "eslint .",
+    "check": "yarn run lint",
     "node:localdev": "eval $(yarn -s env) && SERVER_PORT=${SERVER_PORT:-3000} SERVER_HOST=${SERVER_HOST:0.0.0.0} nodemon --watch src src/server/index.js",
     "cf:_params": "eval $(yarn -s env) && echo --parameters ParameterKey=Stage,ParameterValue=${STAGE} ParameterKey=ServiceName,ParameterValue=${SERVICE_NAME}",
     "cf:bootstrap:_stack": "eval $(yarn -s env) && echo --region ${AWS_REGION} --stack-name cf-${SERVICE_NAME}-${STAGE}-bootstrap",
@@ -23,11 +25,18 @@
     "tf:service:apply": "eval $(yarn -s env) && cd terraform && terraform apply $(yarn -s tf:service:_vars)"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "serverless-http": "^1.9.0"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "deepmerge": "^3.1.0",
+    "doctoc": "^1.4.0",
+    "eslint": "^5.13.0",
+    "eslint-config-formidable": "^4.0.0",
+    "eslint-plugin-filenames": "^1.3.2",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-promise": "^4.0.1",
     "nodemon": "^1.18.9"
   }
 }
