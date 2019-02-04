@@ -6,7 +6,28 @@
   "repository": "https://github.com/FormidableLabs/aws-lambda-serverless-reference",
   "author": "Ryan Roemer <ryan.roemer@formidable.com>",
   "license": "MIT",
+  "scripts": {
+    "env": "echo export STAGE=${STAGE:-localdev}; echo export SERVICE_NAME=simple-reference; echo export AWS_REGION=${AWS_REGION:-us-east-1}; echo export AWS_XRAY_CONTEXT_MISSING=LOG_ERROR",
+    "node:localdev": "eval $(yarn -s env) && SERVER_PORT=${SERVER_PORT:-3000} SERVER_HOST=${SERVER_HOST:0.0.0.0} nodemon --watch src src/server/index.js",
+    "cf:_params": "eval $(yarn -s env) && echo --parameters ParameterKey=Stage,ParameterValue=${STAGE} ParameterKey=ServiceName,ParameterValue=${SERVICE_NAME}",
+    "cf:bootstrap:_stack": "eval $(yarn -s env) && echo --region ${AWS_REGION} --stack-name cf-${SERVICE_NAME}-${STAGE}-bootstrap",
+    "cf:bootstrap:_tmpl": "echo --template-body file://aws/bootstrap.yml ",
+    "cf:bootstrap:create": "aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM $(yarn -s cf:bootstrap:_tmpl) $(yarn -s cf:bootstrap:_stack) $(yarn -s cf:_params)",
+    "cf:bootstrap:update": "aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM $(yarn -s cf:bootstrap:_tmpl) $(yarn -s cf:bootstrap:_stack) $(yarn -s cf:_params)",
+    "cf:bootstrap:status": "aws cloudformation describe-stacks --query 'Stacks[0].StackStatus' $(yarn -s cf:bootstrap:_stack)",
+    "cf:bootstrap:_delete": "aws cloudformation delete-stack $(yarn -s cf:bootstrap:_stack)",
+    "tf:service:_backend": "echo -backend-config=\"bucket=cf-${SERVICE_NAME}-${STAGE}-terraform-state\" -backend-config=\"key=${SERVICE_NAME}-${STAGE}-terraform-state.tfstate\" -backend-config=\"dynamodb_table=cf-${SERVICE_NAME}-${STAGE}-terraform-locks\" -backend-config=\"region=${AWS_REGION}\" ",
+    "tf:service:_vars": "echo -var \"region=${AWS_REGION}\" -var \"service_name=${SERVICE_NAME}\" -var \"stage=${STAGE}\" ",
+    "tf:service:init": "eval $(yarn -s env) && cd terraform && terraform init $(yarn -s tf:service:_backend) $(yarn -s tf:service:_vars)",
+    "tf:service:plan": "eval $(yarn -s env) && cd terraform && terraform plan $(yarn -s tf:service:_vars)",
+    "tf:service:apply": "eval $(yarn -s env) && cd terraform && terraform apply $(yarn -s tf:service:_vars)"
+  },
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
     "serverless-http": "^1.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
   }
 }
