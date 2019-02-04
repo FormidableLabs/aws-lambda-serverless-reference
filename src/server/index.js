@@ -54,8 +54,10 @@ module.exports.handler = (event, context, callback) => {
 
 // DOCKER/DEV/ANYTHING: Start the server directly.
 if (require.main === module) {
-  const server = app.listen({ port: PORT,
-    host: HOST }, () => {
+  const server = app.listen({
+    port: PORT,
+    host: HOST
+  }, () => {
     const { address, port } = server.address();
 
     // eslint-disable-next-line no-console
