@@ -22,12 +22,11 @@ Infrastructure stack:
 
 ### Naming
 
-We use a naming convention to separate some various high level things:
+We use a naming convention in cloud resources and `yarn` tasks to separate some various high level things:
 
 * `aws`: AWS specific names and files (`./aws/`).
 * `tf`: Terraform specific names and files (`./terraform`).
 * `sls`: Serverless framework names.
-* `src`: Our actual application code (`./src/`).
 
 ### Stages
 
@@ -54,6 +53,26 @@ $ STAGE=production yarn run <task>
 ```
 
 _Note_: We separate the `STAGE` variable from `NODE_ENV` because often there are build implications of `NODE_ENV` that are distinct from our notion of deploy target environments.
+
+### Environment Variables
+
+Our task runner scheme is a bash + `yarn` based system crafted around the following environment variables (with defaults):
+
+* `STAGE`: `localdev`
+* `SERVICE_NAME`: `simple-reference` (The name of the application/service in the cloud.)
+* `AWS_REGION`: `us-east-1`
+
+... and some minor localdev only ones:
+
+* `AWS_XRAY_CONTEXT_MISSING`: `LOG_ERROR` (Have Xray not error in localdev)
+* `SERVER_PORT`: `3000`
+* `SERVER_HOST`: `0.0.0.0`
+
+If your project supports Windows, you will want to have a more general / permissive approach.
+
+
+
+
 
 TODO_REST_OF_DOCS
 
