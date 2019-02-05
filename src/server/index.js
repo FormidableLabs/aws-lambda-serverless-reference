@@ -32,9 +32,9 @@ app.use("/favicon.ico", (req, res) => {
 });
 
 // Root.
-// Ex: http://127.0.0.1:3000/
+// Ex: http://127.0.0.1:3000/hello.json
 // => `{"hello":"static REST world!"}`
-app.use("/", (req, res) => {
+app.use("/hello.json", (req, res) => {
   res.json({
     hello: "static REST world!"
   });

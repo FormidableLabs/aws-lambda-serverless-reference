@@ -75,6 +75,64 @@ Our task runner scheme is a bash + `yarn` based system crafted around the follow
 
 If your project supports Windows, you will want to have a more general / permissive approach.
 
+## Installation
+
+### Node.js (Runtime)
+
+Our application is a Node.js server.
+
+First, make sure you have our version of node (determined by `.nvmrc`) that matches our Lambda target (you will need to have [`nvm`](https://github.com/creationix/nvm) installed):
+
+```sh
+$ nvm use
+```
+
+Then, `yarn` install the Node.js dependencies:
+
+```sh
+$ yarn install
+```
+
+
+## Development
+
+We have several options for developing a service locally, with different
+advantages. Here's a quick list of application ports / running commands:
+
+* `3000`: Node server via `nodemon`. (`yarn node:localdev`)
+* `3001`: Lambda offline local simulation. (`yarn lambda:localdev`)
+
+### Node.js
+
+Run the server straight up in your terminal with Node.js via `nodemon` for
+instant restarts on changes:
+
+```sh
+$ yarn node:localdev
+```
+
+See it in action!:
+
+- [http://127.0.0.1:3000/hello.json](http://127.0.0.1:3000/hello.json)
+
+Or from the command line:
+
+```sh
+$ curl -X POST "http://127.0.0.1:3000/hello.json" \
+  -H "Content-Type: application/json"
+```
+
+### Lambda Offline
+
+Run the server in a Lambda simulation via the `serverless-offline` plugin
+
+```sh
+$ yarn lambda:localdev
+```
+
+See it in action!:
+
+- [http://127.0.0.1:3001/hello.json](http://127.0.0.1:3001/hello.json)
 
 
 
