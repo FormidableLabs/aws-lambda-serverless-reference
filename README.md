@@ -124,7 +124,7 @@ $ curl -X POST "http://127.0.0.1:3000/hello.json" \
 
 ### Lambda Offline
 
-Run the server in a Lambda simulation via the `serverless-offline` plugin
+Run the server in a Lambda simulation via the [`serverless-offline`](https://github.com/dherault/serverless-offline) plugin
 
 ```sh
 $ yarn lambda:localdev

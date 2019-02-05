@@ -23,7 +23,7 @@ const app = express();
 // Settings
 app.set("json spaces", 2); // eslint-disable-line no-magic-numbers
 
-// TODO: /// Tracing
+// TODO: // Tracing
 // app.use(xrayExpress.openSegment(SERVICE));
 
 app.use("/favicon.ico", (req, res) => {
@@ -36,9 +36,20 @@ app.use("/favicon.ico", (req, res) => {
 // => `{"hello":"static REST world!"}`
 app.use("/hello.json", (req, res) => {
   res.json({
-    hello: "static REST world!"
+    msg: "Simple reference serverless app!"
   });
 });
+app.use("/*", (req, res) => {
+  res.send(`
+<html>
+  <body>
+    <h1>The Reference App!</h1>
+    <p>A simple AWS Lambda + Serverless framework application.</p>
+  </body>
+</html>
+  `);
+});
+
 
 // TODO: // Tracing
 // app.use(xrayExpress.closeSegment());
