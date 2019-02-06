@@ -25,6 +25,12 @@ A simple "hello world" reference app using the [serverless][] framework targetin
 - [Development](#development)
   - [Node.js](#nodejs)
   - [Lambda Offline](#lambda-offline)
+- [Admin / Provisioning](#admin--provisioning)
+  - [User Roles](#user-roles)
+  - [Bootstrap Stack](#bootstrap-stack)
+  - [Service Stack](#service-stack)
+- [TODO_SECTION Deployment](#todo_section-deployment)
+- [TODO_REST_OF_DOCS](#todo_rest_of_docs)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
