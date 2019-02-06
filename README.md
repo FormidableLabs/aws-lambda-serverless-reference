@@ -3,6 +3,25 @@ AWS Lambda Serverless Reference
 
 A simple "hello world" reference app using the [serverless][] framework targeting an AWS Lambda deploy.
 
+## Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Overview](#overview)
+  - [Stack](#stack)
+  - [Naming](#naming)
+  - [Stages](#stages)
+  - [Environment Variables](#environment-variables)
+- [Installation](#installation)
+  - [Node.js (Runtime)](#nodejs-runtime)
+- [Development](#development)
+  - [Node.js](#nodejs)
+  - [Lambda Offline](#lambda-offline)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Overview
 
 Although this app is super simple, we have somewhat complex development workflows, cloud infrastructure, and deployment/operations workflows. The point of this project is to not lose focus on "the app" and get all the _other_ things in place to support taking any server application to production on AWS Lambda using the serverless framework.
