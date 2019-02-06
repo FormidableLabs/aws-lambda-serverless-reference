@@ -195,12 +195,12 @@ $ AWS_PROFILE="FIRST.LAST"\
 The most secure mix of the two above options is to install and use [aws-vault](https://github.com/99designs/aws-vault). Once you've followed the installation instructions, you can set up and use a profile like:
 
 ```sh
-# Store AWS credentials for the "home" profile
+# Store AWS credentials for a profile named "FIRST.LAST"
 $ aws-vault add FIRST.LAST
 Enter Access Key Id: INSERT
 Enter Secret Key: INSERT
 
-# Execute a command using temporary credentials
+# Execute a command with temporary creds
 $ aws-vault exec FIRST.LAST -- STAGE=sandbox yarn run lambda:info
 ```
 
