@@ -36,7 +36,7 @@ A simple "hello world" reference app using the [serverless][] framework targetin
 
 ## Overview
 
-Getting a `serverless` application into the cloud "the right way" can be a challenge. To this end, we start with a super-simple, "hello world" Express app targeting AWS Lambda using serverless. Along the way, this reference project takes care of all of the **tough** supporting pieces that go into a production-ready, best-practices-following cloud infrastructure, namely:
+Getting a `serverless` application into the cloud "the right way" can be a challenge. To this end, we start with a super-simple, "hello world" Express app targeting AWS Lambda using serverless. Along the way, this reference project takes care of all of the **tough** supporting pieces that go into a production-ready, best-practices-following cloud infrastructure like:
 
 - Local development workflows.
 - Terraform stack controlling IAM permissions and cloud resources to support a vanilla `serverless` application.
