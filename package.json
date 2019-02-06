@@ -33,7 +33,8 @@
     "tf:service:_vars": "echo -var \"region=${AWS_REGION}\" -var \"service_name=${SERVICE_NAME}\" -var \"stage=${STAGE}\" ",
     "tf:service:init": "eval $(yarn -s env) && cd terraform && terraform init $(yarn -s tf:service:_backend) $(yarn -s tf:service:_vars)",
     "tf:service:plan": "eval $(yarn -s env) && cd terraform && terraform plan $(yarn -s tf:service:_vars)",
-    "tf:service:apply": "eval $(yarn -s env) && cd terraform && terraform apply $(yarn -s tf:service:_vars)"
+    "tf:service:apply": "eval $(yarn -s env) && cd terraform && terraform apply $(yarn -s tf:service:_vars)",
+    "tf:service:_delete": "eval $(yarn -s env) && cd terraform && terraform destroy $(yarn -s tf:service:_vars)"
   },
   "dependencies": {
     "express": "^4.16.4",

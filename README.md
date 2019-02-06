@@ -30,7 +30,7 @@ A simple "hello world" reference app using the [serverless][] framework targetin
 
 ## Overview
 
-Although this app is super simple, we have somewhat complex development workflows, cloud infrastructure, and deployment/operations workflows. The point of this project is to not lose focus on "the app" and get all the _other_ things in place to support taking any server application to production on AWS Lambda using the serverless framework.
+Although this app is super simple, we have somewhat complex development workflows, cloud infrastructure, and deployment/operations workflows. The point of this project is to not lose focus on "the app" and get all the _other_ things in place to support taking any server application to production on AWS Lambda using the Serverless framework.
 
 ### Stack
 
@@ -54,8 +54,8 @@ Infrastructure tools:
 
 We use a naming convention in cloud resources and `yarn` tasks to separate some various high level things:
 
-* `aws`: AWS specific names and files (`./aws/`).
-* `tf`: Terraform specific names and files (`./terraform`).
+* `cf`: AWS CloudFormation specific names.
+* `tf`: Terraform specific names.
 * `sls`: Serverless framework names.
 
 ### Stages
@@ -140,7 +140,7 @@ $ aws --version
 
 #### AWS Credentials
 
-To work with our cloud tools, you need AWS credentials for your specific user  (aka, `FIRST.LAST`). If you don't have an AWS user with access to the `aws-${SERVICE_NAME}-${STAGE}-(admin|developer)` IAM group, then request one from your manager.
+To work with our cloud tools, you need AWS credentials for your specific user  (aka, `FIRST.LAST`). If you don't have an AWS user with access to the `tf-${SERVICE_NAME}-${STAGE}-(admin|developer)` IAM group, then request one from your manager.
 
 Once you have a user + access + secret keys, you need to make them available to commands requiring them. There are a couple of options:
 
@@ -245,9 +245,120 @@ See it in action!:
 - [http://127.0.0.1:3001/hello.json](http://127.0.0.1:3001/hello.json)
 
 
+## Admin / Provisioning
 
+This section discusses getting AWS resources provisioned to support Terraform and then Serverless.
 
-TODO_REST_OF_DOCS
+The basic overview is:
+
+1. **Bootstrap Stack**: Use AWS CloudFormation to provision resources to manage Terraform state.
+2. **Service Stack**: Use Terraform to provision resources / permissions to accompany a Serverless deploy.
+3. **Serverless Stack**:  Use Serverless to package and deploy an application and generated AWS CloudFormation stack.
+
+### User Roles
+
+As a beginning aside, we rely on IAM roles to limit privileges to the minimum necessary to provision, update, and deploy the service. Typically this involves creating personalized users in the AWS console, and then assigning them groups for varying appropriate degrees of privilege. Here are the relevant ones for this reference project:
+
+- **Superuser**: A privileged user that can create the initial bootstrap CloudFormation stack and Terraform service module. It should not be used for Serverless deploys.
+- **Module-provided Service Roles**: The TODO_INSERT_MODULE_LINK_AND_NAME module provides IAM groups and support for different types of users to create/update/delete the Serverless application. The IAM groups created are:
+    - `tf-${SERVICE_NAME}-${STAGE}-admin`: Can create/delete/update the Lambda
+      service.
+    - `tf-${SERVICE_NAME}-${STAGE}-developer`: Can deploy the Lambda service.
+    - `tf-${SERVICE_NAME}-${STAGE}-ci`: Can deploy the Lambda service.
+
+### Bootstrap Stack
+
+This step creates an S3 bucket and DynamoDB data store to enable Terraform to remotely manage it's state. We do this via AWS CloudFormation.
+
+All commands in this section should be run by an AWS superuser.  The configuration for all of this section is controlled by: [`aws/bootstrap.yml`](./aws/bootstrap.yml). Commands and resources created are all prefixed with `cf` as a project-specific choice for ease of identification in the AWS console (vs. Terraform vs. Serverless-generated).
+
+**Create** the CloudFormation stack:
+
+```sh
+# Provision stack.
+$ STAGE=sandbox yarn run cf:bootstrap:create
+{
+    "StackId": "arn:aws:cloudformation:${AWS_REGION}:${AWS_ACCOUNT}:stack/cf-${SERVICE_NAME}-${STAGE}-bootstrap/HASH"
+}
+
+# Check status until reach `CREATE_COMPLETE`
+$ STAGE=sandbox yarn run cf:bootstrap:status
+"CREATE_COMPLETE"
+```
+
+Once this is complete, you can move on to provisioning the service stack section. The remaining commands below are only if you need to update / delete the bootstrap stack, which shouldn't happen that often.
+
+**Update** the CloudFormation stack:
+
+```sh
+# Update, then check status.
+$ STAGE=sandbox yarn run cf:bootstrap:update
+$ STAGE=sandbox yarn run cf:status
+```
+
+**Delete** the CloudFormation stack:
+
+The bootstrap stack should only be deleted _after_ you have removed all of the `-admin|-developer|-ci` groups from users and deleted the Serverless and Terraform service stacks.
+
+```sh
+# **WARNING**: Use with extreme caution!!!
+$ STAGE=sandbox yarn run cf:bootstrap:_delete
+
+# Check status. (A status or error with `does not exist` when done).
+$ STAGE=sandbox yarn run cf:bootstrap:status
+An error occurred (ValidationError) when calling the DescribeStacks operation: Stack with id aws-SERVICE_NAME-STAGE does not exist
+```
+
+### Service Stack
+
+This step provisions a Terraform stack to provide us with IAM groups and other AWS resources to support and enhance a Serverless provision (in the next section).
+
+All commands in this section should be run by an AWS superuser.  The configuration for all of this section is controlled by: [`terraform/main.tf`](./terraform/main.tf). Commands and resources created are all prefixed with `tf` as a project-specific choice for ease of identification.
+
+**Init** your local Terraform state.
+
+This needs to be run once to be able to run any other Terraform commands.
+
+```sh
+$ STAGE=sandbox yarn run tf:service:init
+```
+
+**Plan** the Terraform stack.
+
+Terraform allows you to see what's going to happen / change in your cloud infrastructure before actually committing to it, so it is _always_ a good idea to run a plan before any Terraform mutating command.
+
+```sh
+$ STAGE=sandbox yarn run tf:service:plan
+```
+
+**Apply** the Terraform stack:
+
+This creates / updates as appropriate.
+
+```sh
+# Type in `yes` to go forward
+$ STAGE=sandbox yarn run tf:service:apply
+
+# YOLO: run without checking first
+$ STAGE=sandbox yarn run tf:service:apply -auto-approve
+```
+
+**Delete** the Terraform stack:
+
+The service stack should only be deleted _after_ you have removed all of the `-admin|-developer|-ci` groups from users and deleted the Serverless stack.
+
+```sh
+# **WARNING**: Use with extreme caution!!!
+# Type in `yes` to go forward
+$ STAGE=sandbox yarn run tf:service:_delete
+
+# YOLO: run without checking first
+$ STAGE=sandbox yarn run tf:service:_delete -auto-approve
+```
+
+## TODO_SECTION Deployment
+
+## TODO_REST_OF_DOCS
 
 [serverless]: https://serverless.com/
 [serverless-http]: https://github.com/dougmoscrop/serverless-http
