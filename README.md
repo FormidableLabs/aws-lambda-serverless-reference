@@ -16,6 +16,12 @@ A simple "hello world" reference app using the [serverless][] framework targetin
   - [Environment Variables](#environment-variables)
 - [Installation](#installation)
   - [Node.js (Runtime)](#nodejs-runtime)
+  - [AWS (Deployment)](#aws-deployment)
+    - [AWS Tools](#aws-tools)
+    - [AWS Credentials](#aws-credentials)
+      - [In Environment](#in-environment)
+      - [Saved to Local Disk](#saved-to-local-disk)
+      - [AWS Vault](#aws-vault)
 - [Development](#development)
   - [Node.js](#nodejs)
   - [Lambda Offline](#lambda-offline)
@@ -112,6 +118,91 @@ Then, `yarn` install the Node.js dependencies:
 $ yarn install
 ```
 
+### AWS (Deployment)
+
+#### AWS Tools
+
+Certain administrative / development work require the AWS CLI tools to prepare and deploy our staging / production services. To get those either do:
+
+```sh
+# Install via Python
+$ sudo pip install awscli --ignore-installed six
+
+# Or brew
+$ brew install awscli
+```
+
+After this you should be able to type:
+
+```sh
+$ aws --version
+```
+
+#### AWS Credentials
+
+To work with our cloud tools, you need AWS credentials for your specific user  (aka, `FIRST.LAST`). If you don't have an AWS user with access to the `aws-${SERVICE_NAME}-${STAGE}-(admin|developer)` IAM group, then request one from your manager.
+
+Once you have a user + access + secret keys, you need to make them available to commands requiring them. There are a couple of options:
+
+##### In Environment
+
+You can append the following two environment variables to any command like:
+
+```sh
+$ AWS_ACCESS_KEY_ID=INSERT \
+  AWS_SECRET_ACCESS_KEY=INSERT \
+  STAGE=sandbox \
+  yarn run lambda:info
+```
+
+This has the advantage of not storing secrets on disk. The disadvantage is needing to keep the secrets around to paste and/or `export` into every new terminal.
+
+##### Saved to Local Disk
+
+Another option is to store the secrets on disk. You can configure your `~/.aws` credentials like:
+
+```sh
+$ mkdir -p ~/.aws
+$ touch ~/.aws/credentials
+```
+
+Then add a `default` entry if you only anticipate working on this one project  or a named profile entry of your username (aka, `FIRST.LAST`):
+
+```sh
+$ vim ~/.aws/credentials
+[default|FIRST.LAST]
+aws_access_key_id = INSERT
+aws_secret_access_key = INSERT
+```
+
+If you are using a named profile, then export it into the environment in any terminal you are working in:
+
+```sh
+$ export AWS_PROFILE="FIRST.LAST"
+$ STAGE=sandbox yarn run lambda:info
+```
+
+Or, you can declare the variable inline:
+
+```sh
+$ AWS_PROFILE="FIRST.LAST"\
+  STAGE=sandbox \
+  yarn run lambda:info
+```
+
+##### AWS Vault
+
+The most secure mix of the two above options is to install and use [aws-vault](https://github.com/99designs/aws-vault). Once you've followed the installation instructions, you can set up and use a profile like:
+
+```sh
+# Store AWS credentials for the "home" profile
+$ aws-vault add FIRST.LAST
+Enter Access Key Id: INSERT
+Enter Secret Key: INSERT
+
+# Execute a command using temporary credentials
+$ aws-vault exec FIRST.LAST -- STAGE=sandbox yarn run lambda:info
+```
 
 ## Development
 
