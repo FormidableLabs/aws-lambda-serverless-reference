@@ -14,6 +14,7 @@ A simple "hello world" reference app using the [serverless][] framework targetin
   - [Naming](#naming)
   - [Stages](#stages)
   - [Environment Variables](#environment-variables)
+  - [User Roles](#user-roles)
 - [Installation](#installation)
   - [Node.js (Runtime)](#nodejs-runtime)
   - [AWS (Deployment)](#aws-deployment)
@@ -25,11 +26,10 @@ A simple "hello world" reference app using the [serverless][] framework targetin
 - [Development](#development)
   - [Node.js](#nodejs)
   - [Lambda Offline](#lambda-offline)
-- [Admin / Provisioning](#admin--provisioning)
-  - [User Roles](#user-roles)
+- [Support Stack Provisioning (Superuser)](#support-stack-provisioning-superuser)
   - [Bootstrap Stack](#bootstrap-stack)
   - [Service Stack](#service-stack)
-- [TODO_SECTION Deployment](#todo_section-deployment)
+- [TODO_SECTION Serverless Deployment (IAM Roles)](#todo_section-serverless-deployment-iam-roles)
 - [TODO_REST_OF_DOCS](#todo_rest_of_docs)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -112,6 +112,17 @@ Our task runner scheme is a bash + `yarn` based system crafted around the follow
 * `SERVER_HOST`: `0.0.0.0`
 
 If your project supports Windows, you will want to have a more general / permissive approach.
+
+### User Roles
+
+We rely on IAM roles to limit privileges to the minimum necessary to provision, update, and deploy the service. Typically this involves creating personalized users in the AWS console, and then assigning them groups for varying appropriate degrees of privilege. Here are the relevant ones for this reference project:
+
+- **Superuser - Support Stack**: A privileged user that can create the initial bootstrap CloudFormation stack and Terraform service module that will support a Serverless application. It should not be used for Serverless deploys.
+- **IAM Groups - Serverless App**: The TODO_INSERT_MODULE_LINK_AND_NAME module provides IAM groups and support for different types of users to create/update/delete the Serverless application. The IAM groups created are:
+    - `tf-${SERVICE_NAME}-${STAGE}-admin`: Can create/delete/update the Lambda
+      service.
+    - `tf-${SERVICE_NAME}-${STAGE}-developer`: Can deploy the Lambda service.
+    - `tf-${SERVICE_NAME}-${STAGE}-ci`: Can deploy the Lambda service.
 
 ## Installation
 
@@ -257,8 +268,7 @@ See it in action!:
 
 - [http://127.0.0.1:3001/hello.json](http://127.0.0.1:3001/hello.json)
 
-
-## Admin / Provisioning
+## Support Stack Provisioning (Superuser)
 
 This section discusses getting AWS resources provisioned to support Terraform and then Serverless.
 
@@ -266,18 +276,8 @@ The basic overview is:
 
 1. **Bootstrap Stack**: Use AWS CloudFormation to provision resources to manage Terraform state.
 2. **Service Stack**: Use Terraform to provision resources / permissions to accompany a Serverless deploy.
-3. **Serverless Stack**:  Use Serverless to package and deploy an application and generated AWS CloudFormation stack.
 
-### User Roles
-
-As a beginning aside, we rely on IAM roles to limit privileges to the minimum necessary to provision, update, and deploy the service. Typically this involves creating personalized users in the AWS console, and then assigning them groups for varying appropriate degrees of privilege. Here are the relevant ones for this reference project:
-
-- **Superuser**: A privileged user that can create the initial bootstrap CloudFormation stack and Terraform service module. It should not be used for Serverless deploys.
-- **Module-provided Service Roles**: The TODO_INSERT_MODULE_LINK_AND_NAME module provides IAM groups and support for different types of users to create/update/delete the Serverless application. The IAM groups created are:
-    - `tf-${SERVICE_NAME}-${STAGE}-admin`: Can create/delete/update the Lambda
-      service.
-    - `tf-${SERVICE_NAME}-${STAGE}-developer`: Can deploy the Lambda service.
-    - `tf-${SERVICE_NAME}-${STAGE}-ci`: Can deploy the Lambda service.
+after this, _then_ we are ready to deploy a standard `serverless` application with full support!
 
 ### Bootstrap Stack
 
@@ -369,7 +369,7 @@ $ STAGE=sandbox yarn run tf:service:_delete
 $ STAGE=sandbox yarn run tf:service:_delete -auto-approve
 ```
 
-## TODO_SECTION Deployment
+## TODO_SECTION Serverless Deployment (IAM Roles)
 
 ## TODO_REST_OF_DOCS
 
