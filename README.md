@@ -165,7 +165,7 @@ $ aws --version
 
 #### AWS Credentials
 
-To work with our cloud tools, you need AWS credentials for your specific user  (aka, `FIRST.LAST`). If you don't have an AWS user with access to the `tf-${SERVICE_NAME}-${STAGE}-(admin|developer)` IAM group, then request one from your manager.
+To work with this reference app, you need AWS credentials for your specific user (aka, `FIRST.LAST`). To create the bootstrap and service support stacks, that user will need to be a superuser. To deploy `serverless` applications, the user will need to be attached to given `tf-${SERVICE_NAME}-${STAGE}-(admin|developer)` IAM groups after the service stack is created.
 
 Once you have a user + access + secret keys, you need to make them available to commands requiring them. There are a couple of options:
 
