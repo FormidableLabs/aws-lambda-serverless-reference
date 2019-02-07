@@ -282,7 +282,7 @@ after this, _then_ we are ready to deploy a standard `serverless` application wi
 
 This step creates an S3 bucket and DynamoDB data store to enable Terraform to remotely manage it's state. We do this via AWS CloudFormation.
 
-All commands in this section should be run by an AWS superuser.  The configuration for all of this section is controlled by: [`aws/bootstrap.yml`](./aws/bootstrap.yml). Commands and resources created are all prefixed with `cf` as a project-specific choice for ease of identification in the AWS console (vs. Terraform vs. Serverless-generated).
+All commands in this section should be run by an AWS superuser. The configuration for all of this section is controlled by: [`aws/bootstrap.yml`](./aws/bootstrap.yml). Commands and resources created are all prefixed with `cf` as a project-specific choice for ease of identification in the AWS console (vs. Terraform vs. Serverless-generated).
 
 **Create** the CloudFormation stack:
 
@@ -383,9 +383,83 @@ From there, you can visualize with:
 $ STAGE=sandbox yarn run -s tf:terraform graph | dot -Tsvg > ~/Desktop/infrastructure.svg
 ```
 
-## TODO_SECTION Serverless Deployment (IAM Roles)
+## Serverless Deployment (IAM Roles)
 
-## TODO_REST_OF_DOCS
+This section discusses developers getting code and secrets deployed (manually from local machines to an AWS `development` playground or automated via CI).
+
+All commands in this section should be run by AWS users with attached IAM groups provisioned by our support stack of `tf-${SERVICE_NAME}-${STAGE}-(admin|developer|ci)`. The configuration for this section is controlled by: [`serverless.yml`](./serverless.yml)
+
+### Admin Deployment
+
+These actions are reserved for `-admin` users.
+
+**Create** the Lambda app. The first time through a `deploy`, an `-admin` user
+is required (to effect the underlying CloudFormation changes).
+
+```sh
+$ STAGE=sandbox yarn run lambda:deploy
+
+# Check on app and endpoints.
+$ STAGE=sandbox yarn run lambda:info
+```
+
+**Delete** the Lambda app.
+
+```sh
+# TODO: TEST OUT
+# **WARNING**: Use with extreme caution!!!
+$ STAGE=sandbox yarn run lambda:_delete
+```
+
+**Metrics**:
+
+```sh
+# Show metrics for an application
+$ STAGE=sandbox yarn run lambda:metrics
+```
+
+### User Deployment
+
+These actions can be performed by any user.
+
+Get server **information**:
+
+```sh
+$ STAGE=sandbox yarn run lambda:info
+...
+endpoints:
+  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE
+  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE/{proxy+}
+...
+```
+
+See the **logs**:
+
+```sh
+$ STAGE=sandbox yarn run lambda:logs
+```
+
+**Update** the Lambda server.
+
+```sh
+# TODO: TEST OUT
+$ STAGE=sandbox yarn run lambda:deploy
+```
+
+**Rollback** to a previous Lamba deployment:
+
+If something has gone wrong, you can see the list of available states to
+roll back to with:
+
+```sh
+$ STAGE=sandbox yarn lambda:rollback
+```
+
+Then choose a datestamp and add with the `-t` flag like:
+
+```sh
+$ STAGE=sandbox yarn lambda:rollback -t 2019-02-07T00:35:56.362Z
+```
 
 [serverless]: https://serverless.com/
 [serverless-http]: https://github.com/dougmoscrop/serverless-http
