@@ -216,7 +216,8 @@ $ AWS_PROFILE="FIRST.LAST"\
 
 ##### AWS Vault
 
-The most secure mix of the two above options is to install and use [aws-vault](https://github.com/99designs/aws-vault). Once you've followed the installation instructions, you can set up and use a profile like:
+The most secure mix of the two above options is to install and use
+[aws-vault](https://github.com/99designs/aws-vault). Once you've followed the installation instructions, you can set up and use a profile like:
 
 ```sh
 # Store AWS credentials for a profile named "FIRST.LAST"
@@ -230,16 +231,14 @@ $ aws-vault exec FIRST.LAST -- STAGE=sandbox yarn run lambda:info
 
 ## Development
 
-We have several options for developing a service locally, with different
-advantages. Here's a quick list of application ports / running commands:
+We have several options for developing a service locally, with different advantages. Here's a quick list of application ports / running commands:
 
 * `3000`: Node server via `nodemon`. (`yarn node:localdev`)
 * `3001`: Lambda offline local simulation. (`yarn lambda:localdev`)
 
 ### Node.js
 
-Run the server straight up in your terminal with Node.js via `nodemon` for
-instant restarts on changes:
+Run the server straight up in your terminal with Node.js via `nodemon` for instant restarts on changes:
 
 ```sh
 $ yarn node:localdev
