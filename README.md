@@ -112,6 +112,10 @@ Our task runner scheme is a bash + `yarn` based system crafted around the follow
 * `SERVER_PORT`: `3000`
 * `SERVER_HOST`: `0.0.0.0`
 
+... and some implied ones:
+
+* `FUNCTION_NAME`: The name of a given Lambda function. In this project, the main one is `server`.
+
 If your project supports Windows, you will want to have a more general / permissive approach.
 
 ### User Roles
@@ -444,7 +448,13 @@ endpoints:
 See the **logs**:
 
 ```sh
-$ STAGE=sandbox yarn run lambda:logs -f INSERT_FN_NAME
+$ STAGE=sandbox yarn run lambda:logs -f FUNCTION_NAME
+```
+
+_Note_: To see the logs in the AWS console, you unfortunately cannot just click on "CloudWatch > Logs" and see the relevant potential ones listed because a wildcard would be needed for `log:DescribeLogGroups|Streams`. However, if you know the log group generated name, and we **do** here, you can fill in the blanks and navigate to:
+
+```
+https://console.aws.amazon.com/cloudwatch/home?#logStream:group=/aws/lambda/sls-SERVICE_NAME-STAGE-FUNCTION_NAME;streamFilter=typeLogStreamPrefix
 ```
 
 **Update** the Lambda server.
