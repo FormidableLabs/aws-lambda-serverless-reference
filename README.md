@@ -29,8 +29,9 @@ A simple "hello world" reference app using the [serverless][] framework targetin
 - [Support Stack Provisioning (Superuser)](#support-stack-provisioning-superuser)
   - [Bootstrap Stack](#bootstrap-stack)
   - [Service Stack](#service-stack)
-- [TODO_SECTION Serverless Deployment (IAM Roles)](#todo_section-serverless-deployment-iam-roles)
-- [TODO_REST_OF_DOCS](#todo_rest_of_docs)
+- [Serverless Deployment (IAM Roles)](#serverless-deployment-iam-roles)
+  - [Admin Deployment](#admin-deployment)
+  - [User Deployment](#user-deployment)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -420,7 +421,7 @@ $ STAGE=sandbox yarn run lambda:metrics
 
 ### User Deployment
 
-These actions can be performed by any user.
+These actions can be performed by any user (`-admin|developer|ci`).
 
 Get server **information**:
 
@@ -442,7 +443,6 @@ $ STAGE=sandbox yarn run lambda:logs
 **Update** the Lambda server.
 
 ```sh
-# TODO: TEST OUT
 $ STAGE=sandbox yarn run lambda:deploy
 ```
 
