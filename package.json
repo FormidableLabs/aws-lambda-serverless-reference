@@ -18,7 +18,7 @@
     "lambda:localdev": "yarn run lambda:sls offline start --port ${SERVER_PORT:-3001} --host ${SERVER_HOST:-0.0.0.0}",
     "lambda:deploy": "yarn run lambda:sls deploy",
     "lambda:info": "yarn run lambda:sls info",
-    "lambda:logs": "echo TODO_NEED_FUNCTION yarn run lambda:sls logs --function server",
+    "lambda:logs": "yarn run lambda:sls logs",
     "lambda:metrics": "yarn run lambda:sls metrics",
     "lambda:rollback": "yarn run lambda:sls rollback",
     "lambda:_delete": "yarn run lambda:sls remove",

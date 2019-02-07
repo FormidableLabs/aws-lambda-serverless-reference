@@ -444,7 +444,7 @@ endpoints:
 See the **logs**:
 
 ```sh
-$ STAGE=sandbox yarn run lambda:logs
+$ STAGE=sandbox yarn run lambda:logs -f INSERT_FN_NAME
 ```
 
 **Update** the Lambda server.
