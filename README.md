@@ -369,6 +369,21 @@ $ STAGE=sandbox yarn run tf:service:_delete
 $ STAGE=sandbox yarn run tf:service:_delete -auto-approve
 ```
 
+**Visualize** the Terraform stack:
+
+These are Mac-based instructions, but analogous steps are available on other platforms. First, you'll need GraphViz for the `dot` tool:
+
+```sh
+$ brew install graphviz
+```
+
+From there, you can visualize with:
+
+```sh
+# Generate SVG
+$ STAGE=sandbox yarn run -s tf:terraform graph | dot -Tsvg > ~/Desktop/infrastructure.svg
+```
+
 ## TODO_SECTION Serverless Deployment (IAM Roles)
 
 ## TODO_REST_OF_DOCS
