@@ -319,7 +319,7 @@ $ STAGE=sandbox yarn run cf:bootstrap:_delete
 
 # Check status. (A status or error with `does not exist` when done).
 $ STAGE=sandbox yarn run cf:bootstrap:status
-An error occurred (ValidationError) when calling the DescribeStacks operation: Stack with id aws-SERVICE_NAME-STAGE does not exist
+An error occurred (ValidationError) when calling the DescribeStacks operation: Stack with id cf-SERVICE_NAME-STAGE does not exist
 ```
 
 ### Service Stack
