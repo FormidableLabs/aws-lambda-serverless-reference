@@ -459,13 +459,13 @@ If something has gone wrong, you can see the list of available states to
 roll back to with:
 
 ```sh
-$ STAGE=sandbox yarn lambda:rollback
+$ STAGE=sandbox yarn run lambda:rollback
 ```
 
 Then choose a datestamp and add with the `-t` flag like:
 
 ```sh
-$ STAGE=sandbox yarn lambda:rollback -t 2019-02-07T00:35:56.362Z
+$ STAGE=sandbox yarn run lambda:rollback -t 2019-02-07T00:35:56.362Z
 ```
 
 [serverless]: https://serverless.com/
