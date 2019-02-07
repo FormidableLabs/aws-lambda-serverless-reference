@@ -407,9 +407,16 @@ $ STAGE=sandbox yarn run lambda:info
 **Delete** the Lambda app.
 
 ```sh
-# TODO: TEST OUT
 # **WARNING**: Use with extreme caution!!!
 $ STAGE=sandbox yarn run lambda:_delete
+
+# Confirm (with expected error).
+$ STAGE=sandbox yarn lambda:info
+...
+
+  Serverless Error ---------------------------------------
+
+  Stack with id sls-${SERVICE_NAME}-${STAGE} does not exist
 ```
 
 **Metrics**:
