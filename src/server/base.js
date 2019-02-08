@@ -7,6 +7,7 @@ const express = require("express");
 const DEFAULT_PORT = 3000;
 const PORT = parseInt(process.env.SERVER_PORT || DEFAULT_PORT, 10);
 const HOST = process.env.SERVER_HOST || "0.0.0.0";
+const BASE_URL = "/base";
 // TODO(Xray)
 // const STAGE = process.env.STAGE || process.env.NODE_ENV || "localdev";
 // const SERVICE_NAME = process.env.SERVICE_NAME;
@@ -34,12 +35,12 @@ app.use("/favicon.ico", (req, res) => {
 // Root.
 // Ex: http://127.0.0.1:3000/hello.json
 // => `{"hello":"static REST world!"}`
-app.use("/hello.json", (req, res) => {
+app.use(`${BASE_URL}/hello.json`, (req, res) => {
   res.json({
     msg: "Simple reference serverless app!"
   });
 });
-app.use("/*", (req, res) => {
+app.use(`${BASE_URL}/*`, (req, res) => {
   res.send(`
 <html>
   <body>
@@ -49,7 +50,6 @@ app.use("/*", (req, res) => {
 </html>
   `);
 });
-
 
 // TODO(Xray): // Tracing
 // app.use(xrayExpress.closeSegment());
