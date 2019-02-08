@@ -1,8 +1,3 @@
-# Allowing defaults for:
-# - `partition` (caller)
-# - `account_id` (caller)
-# - `iam_region` (`*`)
-
 variable "region" {
   description = "The deploy target region in AWS"
   default     = "us-east-1"
