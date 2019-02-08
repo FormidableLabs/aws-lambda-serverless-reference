@@ -14,8 +14,9 @@ package:
   # https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/6
   exclude:
     - "*"
-    - "{aws,coverage,terraform,test}/**"
-    - "**/node_modules/{.cache}/**"
+    - "aws/**"
+    - "terraform/**"
+    - "**/node_modules/.cache/**"
     - "**/node_modules/aws-sdk/**" # included on Lambda.
     - "**/node_modules/.yarn-integrity"
     - "!package.json"
@@ -43,13 +44,14 @@ provider:
   # TODO(Xray): Replace default role with custom one in CF.
 
 functions:
-  server:
+  # SCENARIO: The simplest, vanilla Serverless app.
+  base:
     timeout: 30 # seconds (`300` max)
     memorySize: 128 # MB value (`1024` default)
-    handler: src/server/index.handler
+    handler: src/server/base.handler
     events: # Use a generic proxy to allow Express app to route.
-      - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http: ANY /base
+      - http: 'ANY /base/{proxy+}'
 
 resources:
   Resources:
