@@ -1,7 +1,7 @@
 "use strict";
 
-// TODO: const { setLogger } = require("aws-xray-sdk-core"); // Xray
-// TODO: const xrayExpress = require("aws-xray-sdk-express"); // Xray
+// TODO(Xray): const { setLogger } = require("aws-xray-sdk-core"); // Xray
+// TODO(Xray): const xrayExpress = require("aws-xray-sdk-express"); // Xray
 const express = require("express");
 
 const DEFAULT_PORT = 3000;
@@ -23,7 +23,7 @@ const app = express();
 // Settings
 app.set("json spaces", 2); // eslint-disable-line no-magic-numbers
 
-// TODO: // Tracing
+// TODO(Xray): // Tracing
 // app.use(xrayExpress.openSegment(SERVICE));
 
 app.use("/favicon.ico", (req, res) => {
@@ -51,7 +51,7 @@ app.use("/*", (req, res) => {
 });
 
 
-// TODO: // Tracing
+// TODO(Xray): // Tracing
 // app.use(xrayExpress.closeSegment());
 
 // LAMBDA: Export handler for lambda use.

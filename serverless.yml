@@ -10,7 +10,8 @@ package:
   # - Zipped bundle: `50 MB`
   # - Unzipped bundle: `250 MB`
   #
-  # TODO: Write a custom packager (TODO_NEW_ISSUE)
+  # TODO(6): Use a custom packager.
+  # https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/6
   exclude:
     - "*"
     - "{aws,coverage,terraform,test}/**"
@@ -39,7 +40,7 @@ provider:
   environment:
     STAGE: ${self:custom.stage}
     SERVICE_NAME: ${self:custom.service}
-  # TODO: Replace default roll with custom one in CF.
+  # TODO(Xray): Replace default role with custom one in CF.
 
 functions:
   server:

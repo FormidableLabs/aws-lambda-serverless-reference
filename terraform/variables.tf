@@ -1,5 +1,3 @@
-# TODO TODO TODO
-
 # Allowing defaults for:
 # - `partition` (caller)
 # - `account_id` (caller)

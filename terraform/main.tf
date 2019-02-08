@@ -10,7 +10,7 @@ terraform {
 }
 
 module "serverless_iam" {
-  // TODO: UPDATE FROM REGISTRY
+  // TODO(Registry): UPDATE FROM REGISTRY
   source = "../../serverless-iam-terraform/modules/iam"
 
   region       = "${var.region}"
