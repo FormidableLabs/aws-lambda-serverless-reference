@@ -9,9 +9,9 @@ terraform {
   }
 }
 
-module "serverless_iam" {
+module "serverless" {
   # TODO(Registry): UPDATE FROM REGISTRY
-  source = "../../serverless-iam-terraform/modules/iam"
+  source = "../../serverless-iam-terraform"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
