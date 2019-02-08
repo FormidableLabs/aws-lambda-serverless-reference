@@ -1,13 +1,21 @@
 "use strict";
 
+const { setLogger } = require("aws-xray-sdk-core"); // Xray
+const xrayExpress = require("aws-xray-sdk-express"); // Xray
 const express = require("express");
 
 const DEFAULT_PORT = 3000;
 const PORT = parseInt(process.env.SERVER_PORT || DEFAULT_PORT, 10);
 const HOST = process.env.SERVER_HOST || "0.0.0.0";
-const STAGE = process.env.STAGE || "localdev";
-const BASE_URL = "/base";
-const FULL_BASE_URL = STAGE === "localdev" ? BASE_URL : `/${STAGE}${BASE_URL}`;
+const STAGE = process.env.STAGE || process.env.NODE_ENV || "localdev";
+const SERVICE_NAME = process.env.SERVICE_NAME;
+const SERVICE = `${SERVICE_NAME}-${STAGE}`;
+const BASE_URL = "/xray";
+
+// Log xray locally.
+if (STAGE === "localdev") {
+  setLogger(console);
+}
 
 // The base app for any use...
 const app = express();
@@ -15,38 +23,30 @@ const app = express();
 // Settings
 app.set("json spaces", 2); // eslint-disable-line no-magic-numbers
 
+app.use(xrayExpress.openSegment(SERVICE)); // Xray
+
+// Routes
 app.use("/favicon.ico", (req, res) => {
   res.status(404); // eslint-disable-line no-magic-numbers
   res.send("404");
-});
-
-// Root.
-// Ex: http://127.0.0.1:3000/hello.json
-// => `{"hello":"static REST world!"}`
-app.use(`${BASE_URL}/hello.json`, (req, res) => {
-  res.json({
-    msg: "Simple reference serverless app!"
-  });
 });
 app.use(`${BASE_URL}/*`, (req, res) => {
   res.send(`
 <html>
   <body>
-    <h1>The Reference App!</h1>
-    <p>A simple AWS Lambda + Serverless framework application.</p>
-    <p>
-      See a JSON response:
-      <a href="${FULL_BASE_URL}/hello.json"><code>${FULL_BASE_URL}/hello.json</code></a>
-    </p>
+    <h1>The Reference App (Xray Version)!</h1>
+    <p>An AWS Lambda + Serverless framework application with Xray tracing.</p>
+    <p>Check Xray dashboard for samples!</p>
   </body>
 </html>
   `);
 });
 
+app.use(xrayExpress.closeSegment()); // Xray
+
 // LAMBDA: Export handler for lambda use.
 let handler;
 module.exports.handler = (event, context, callback) => {
-  // Lazy require `serverless-http` to allow non-Lambda targets to omit.
   // eslint-disable-next-line global-require
   handler = handler || require("serverless-http")(app);
   return handler(event, context, callback);

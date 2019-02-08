@@ -41,23 +41,28 @@ provider:
   environment:
     STAGE: ${self:custom.stage}
     SERVICE_NAME: ${self:custom.service}
+  timeout: 30 # seconds (`300` max)
+  memorySize: 128 # MB value (`1024` default)
   # TODO(Xray): Replace default role with custom one in CF.
 
 functions:
-  # SCENARIO: The simplest, vanilla Serverless app.
+  # SCENARIO - base: The simplest, vanilla Serverless app.
   base:
-    timeout: 30 # seconds (`300` max)
-    memorySize: 128 # MB value (`1024` default)
     handler: src/server/base.handler
     events: # Use a generic proxy to allow Express app to route.
       - http: ANY /base
       - http: 'ANY /base/{proxy+}'
+  # SCENARIO - xray: Simple app with Xray tracing.
+  xray:
+    handler: src/server/xray.handler
+    events:
+      - http: ANY /xray
+      - http: 'ANY /xray/{proxy+}'
 
 resources:
   Resources:
-    # TODO(Xray): Enable X-Ray tracing
-    # Based on sls-generated CF template name.
-    # ServerLambdaFunction:
-    #   Properties:
-    #     TracingConfig:
-    #       Mode: Active
+    # Enable Xray tracing.
+    XrayLambdaFunction:
+      Properties:
+        TracingConfig:
+          Mode: Active

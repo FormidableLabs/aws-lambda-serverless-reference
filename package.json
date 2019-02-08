@@ -12,7 +12,7 @@
     "build": "yarn run build:toc",
     "lint": "eslint .",
     "check": "yarn run lint",
-    "node:localdev": "eval $(yarn -s env) && SERVER_PORT=${SERVER_PORT:-3000} SERVER_HOST=${SERVER_HOST:-0.0.0.0} nodemon --watch src src/server/base.js",
+    "node:localdev": "eval $(yarn -s env) && SERVER_PORT=${SERVER_PORT:-3000} SERVER_HOST=${SERVER_HOST:-0.0.0.0} nodemon --watch src src/server/${SCENARIO:-base}.js",
     "lambda:sls": "eval $(yarn -s env) && sls -s ${STAGE}",
     "lambda:localdev": "yarn run lambda:sls offline start --port ${SERVER_PORT:-3001} --host ${SERVER_HOST:-0.0.0.0}",
     "lambda:deploy": "yarn run lambda:sls deploy",
