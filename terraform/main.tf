@@ -24,3 +24,8 @@ module "serverless" {
   # tf_service_name   = `tf-SERVICE_NAME`
   # sls_service_name  = `sls-SERVICE_NAME`
 }
+
+module "serverless_xray" {
+  # TODO(Registry): UPDATE FROM REGISTRY
+  source = "../../serverless-iam-terraform/modules/xray"
+}
