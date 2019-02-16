@@ -26,10 +26,6 @@ app.set("json spaces", 2); // eslint-disable-line no-magic-numbers
 app.use(xrayExpress.openSegment(SERVICE)); // Xray
 
 // Routes
-app.use("/favicon.ico", (req, res) => {
-  res.status(404); // eslint-disable-line no-magic-numbers
-  res.send("404");
-});
 app.use(`${BASE_URL}/*`, (req, res) => {
   res.send(`
 <html>

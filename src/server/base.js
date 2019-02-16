@@ -15,11 +15,6 @@ const app = express();
 // Settings
 app.set("json spaces", 2); // eslint-disable-line no-magic-numbers
 
-app.use("/favicon.ico", (req, res) => {
-  res.status(404); // eslint-disable-line no-magic-numbers
-  res.send("404");
-});
-
 // Root.
 // Ex: http://127.0.0.1:3000/hello.json
 // => `{"hello":"static REST world!"}`
