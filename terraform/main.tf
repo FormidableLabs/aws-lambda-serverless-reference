@@ -29,8 +29,7 @@ module "serverless_xray" {
   # TODO(Registry): UPDATE FROM REGISTRY
   source = "../../serverless-iam-terraform/modules/xray"
 
-  # Same variables as before.
-  # TODO(Xray): Probably need more stuff.
+  # Same variables as for `serverless` module.
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
