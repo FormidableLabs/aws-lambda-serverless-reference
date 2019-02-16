@@ -9,6 +9,7 @@ terraform {
   }
 }
 
+# Base `serverless` IAM support.
 module "serverless" {
   # TODO(Registry): UPDATE FROM REGISTRY
   source = "../../serverless-iam-terraform"
@@ -25,6 +26,7 @@ module "serverless" {
   # sls_service_name  = `sls-SERVICE_NAME`
 }
 
+# OPTION(Xray): Add X-ray support to lambda execution roles.
 module "serverless_xray" {
   # TODO(Registry): UPDATE FROM REGISTRY
   source = "../../serverless-iam-terraform/modules/xray"

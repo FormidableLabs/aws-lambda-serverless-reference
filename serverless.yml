@@ -61,7 +61,7 @@ functions:
 
 resources:
   Resources:
-    # Enable Xray tracing.
+    # OPTION(Xray): Enable Xray tracing.
     XrayLambdaFunction:
       Properties:
         TracingConfig:
