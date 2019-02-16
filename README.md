@@ -123,7 +123,7 @@ If your project supports Windows, you will want to have a more general / permiss
 We rely on IAM roles to limit privileges to the minimum necessary to provision, update, and deploy the service. Typically this involves creating personalized users in the AWS console, and then assigning them groups for varying appropriate degrees of privilege. Here are the relevant ones for this reference project:
 
 * **Superuser - Support Stack**: A privileged user that can create the initial bootstrap CloudFormation stack and Terraform service module that will support a Serverless application. It should not be used for Serverless deploys.
-* **IAM Groups - Serverless App**: The TODO_INSERT_MODULE_LINK_AND_NAME module provides IAM groups and support for different types of users to create/update/delete the Serverless application. The IAM groups created are:
+* **IAM Groups - Serverless App**: The [`FormidableLabs/serverless/aws`](https://registry.terraform.io/modules/FormidableLabs/serverless/aws) module provides IAM groups and support for different types of users to create/update/delete the Serverless application. The IAM groups created are:
     * `tf-${SERVICE_NAME}-${STAGE}-admin`: Can create/delete/update the Severless app.
     * `tf-${SERVICE_NAME}-${STAGE}-developer`: Can deploy the Severless app.
     * `tf-${SERVICE_NAME}-${STAGE}-ci`: Can deploy the Severless app.

@@ -43,7 +43,6 @@ provider:
     SERVICE_NAME: ${self:custom.service}
   timeout: 30 # seconds (`300` max)
   memorySize: 128 # MB value (`1024` default)
-  # TODO(Xray): Replace default role with custom one in CF.
 
 functions:
   # SCENARIO - base: The simplest, vanilla Serverless app.
