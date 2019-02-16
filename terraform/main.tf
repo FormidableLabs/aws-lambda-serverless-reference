@@ -12,7 +12,7 @@ terraform {
 # Base `serverless` IAM support.
 module "serverless" {
   # TODO(Registry): UPDATE FROM REGISTRY
-  source = "../../serverless-iam-terraform"
+  source = "../../terraform-aws-serverless"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
@@ -29,7 +29,7 @@ module "serverless" {
 # OPTION(Xray): Add X-ray support to lambda execution roles.
 module "serverless_xray" {
   # TODO(Registry): UPDATE FROM REGISTRY
-  source = "../../serverless-iam-terraform/modules/xray"
+  source = "../../terraform-aws-serverless/modules/xray"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
