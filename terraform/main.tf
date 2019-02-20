@@ -19,9 +19,9 @@ module "serverless" {
   stage        = "${var.stage}"
 
   # (Default values)
-  # partition         = `AWS_CALLER`
-  # account_id        = `AWS_CALLER`
   # iam_region        = `*`
+  # iam_partition     = `*`
+  # iam_account_id    = `AWS_CALLER account`
   # tf_service_name   = `tf-SERVICE_NAME`
   # sls_service_name  = `sls-SERVICE_NAME`
 }
