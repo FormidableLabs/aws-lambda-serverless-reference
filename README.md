@@ -439,8 +439,10 @@ Get server **information**:
 $ STAGE=sandbox yarn run lambda:info
 ...
 endpoints:
-  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE
-  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE/{proxy+}
+  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE/base
+  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE/base/{proxy+}
+  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE/xray
+  ANY - https://HASH.execute-api.AWS_REGION.amazonaws.com/STAGE/xray/{proxy+}
 ...
 ```
 
