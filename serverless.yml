@@ -1,0 +1,67 @@
+# CloudFormation output name: `sls-${SERVICE_NAME}-${STAGE}`
+service: sls-${self:custom.service}
+
+package:
+  # Limit files we will send up to Lambda.
+  # https://serverless.com/framework/docs/providers/aws/guide/packaging/
+  #
+  # AWS constraints:
+  # https://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list
+  # - Zipped bundle: `50 MB`
+  # - Unzipped bundle: `250 MB`
+  #
+  # TODO(6): Use a custom packager.
+  # https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/6
+  exclude:
+    - "*"
+    - "aws/**"
+    - "terraform/**"
+    - "**/node_modules/.cache/**"
+    - "**/node_modules/aws-sdk/**" # included on Lambda.
+    - "**/node_modules/.yarn-integrity"
+    - "!package.json"
+
+  # Serverless packages all our deps. We want to exclude the dev ones because
+  # we have such a limited amount of space.
+  excludeDevDependencies: true
+
+custom:
+  service: ${env:SERVICE_NAME}
+  region: ${opt:region, env:AWS_REGION}
+  stage: ${opt:stage, env:STAGE}
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+  environment:
+    STAGE: ${self:custom.stage}
+    SERVICE_NAME: ${self:custom.service}
+  timeout: 30 # seconds (`300` max)
+  memorySize: 128 # MB value (`1024` default)
+
+functions:
+  # SCENARIO - base: The simplest, vanilla Serverless app.
+  base:
+    handler: src/server/base.handler
+    events: # Use a generic proxy to allow Express app to route.
+      - http: ANY /base
+      - http: 'ANY /base/{proxy+}'
+  # SCENARIO - xray: Simple app with Xray tracing.
+  xray:
+    handler: src/server/xray.handler
+    events:
+      - http: ANY /xray
+      - http: 'ANY /xray/{proxy+}'
+
+resources:
+  Resources:
+    # OPTION(Xray): Enable Xray tracing.
+    XrayLambdaFunction:
+      Properties:
+        TracingConfig:
+          Mode: Active

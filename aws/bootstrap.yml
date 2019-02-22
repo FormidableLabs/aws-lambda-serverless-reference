@@ -1,0 +1,51 @@
+---
+#############################################################################
+# Bootstrap
+#############################################################################
+# This template provides base resources for a Terraform stack to store and
+# manage remote state.
+#############################################################################
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: "Terraform bootstrap"
+
+# Custom parameters
+Parameters:
+  ServiceName:
+    Description: Base name of the service
+    Type: String
+
+  # Our arbitrary choices for supported, isolated statges.
+  Stage:
+    Description: Operational stage (e.g., development, staging, production)
+    Type: String
+    AllowedValues:
+      - sandbox
+      - development
+      - staging
+      - production
+
+Resources:
+  # Enable Terraform state in AWS
+  # https://www.terraform.io/docs/backends/types/s3.html
+  TerraformState:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "cf-${ServiceName}-${Stage}-terraform-state"
+      # > It is highly recommended that you enable Bucket Versioning on the S3
+      # > bucket to allow for state recovery in the case of accidental deletions
+      # > and human error.
+      VersioningConfiguration:
+        Status: Enabled
+
+  TerraformLocks:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "cf-${ServiceName}-${Stage}-terraform-locks"
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
