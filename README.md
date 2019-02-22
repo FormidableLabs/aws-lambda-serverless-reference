@@ -10,6 +10,7 @@ A simple "hello world" reference app using the [serverless][] framework targetin
 
 
 - [Overview](#overview)
+  - [Audience](#audience)
   - [Stack](#stack)
   - [Naming](#naming)
   - [Stages](#stages)
@@ -45,6 +46,10 @@ Getting a `serverless` application into the cloud "the right way" can be a chall
 - Serverless application deployment and production lifecycle management.
 
 Using this project as a template, you can hopefully take a new `serverless` application and set up "everything else" to support it in AWS the right way, from the start.
+
+### Audience
+
+This reference application is meant for developers / architects who are already familiar with AWS infrastructures (and CloudFormation), Terraform, and Serverless framework applications. This project will hopefully provide some guidance / examples to get the whole shebang all the way to a multi-environment deployment and support a team of administrators and engineers for the application.
 
 ### Stack
 
