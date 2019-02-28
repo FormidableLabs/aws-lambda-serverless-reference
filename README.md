@@ -469,7 +469,7 @@ https://console.aws.amazon.com/cloudwatch/home?#logStream:group=/aws/lambda/sls-
 $ STAGE=sandbox yarn run lambda:deploy
 ```
 
-**Rollback** to a previous Lamba deployment:
+**Rollback** to a previous Lambda deployment:
 
 If something has gone wrong, you can see the list of available states to
 roll back to with:
