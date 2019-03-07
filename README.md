@@ -20,6 +20,7 @@ A simple "hello world" reference app using the [serverless][] framework targetin
   - [Node.js (Runtime)](#nodejs-runtime)
   - [AWS (Deployment)](#aws-deployment)
     - [AWS Tools](#aws-tools)
+    - [Terraform](#terraform)
     - [AWS Credentials](#aws-credentials)
       - [In Environment](#in-environment)
       - [Saved to Local Disk](#saved-to-local-disk)
@@ -171,6 +172,10 @@ After this you should be able to type:
 $ aws --version
 ```
 
+#### Terraform
+
+Install Terraform CLI following [the instructions](https://learn.hashicorp.com/terraform/getting-started/install).
+
 #### AWS Credentials
 
 To work with this reference app, you need AWS credentials for your specific user (aka, `FIRST.LAST`). To create the bootstrap and service support stacks, that user will need to be a superuser. To deploy `serverless` applications, the user will need to be attached to given `tf-${SERVICE_NAME}-${STAGE}-(admin|developer)` IAM groups after the service stack is created.
@@ -314,7 +319,7 @@ Once this is complete, you can move on to provisioning the service stack section
 ```sh
 # Update, then check status.
 $ STAGE=sandbox yarn run cf:bootstrap:update
-$ STAGE=sandbox yarn run cf:status
+$ STAGE=sandbox yarn run cf:bootstrap:status
 ```
 
 **Delete** the CloudFormation stack:
