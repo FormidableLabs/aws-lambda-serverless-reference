@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "${var.region}"
+  region = "${var.region}"
 }
 
 terraform {
@@ -10,6 +10,7 @@ terraform {
 
 # Base `serverless` IAM support.
 module "serverless" {
+  // source = "../../terraform-aws-serverless" // DEV ONLY
   source = "FormidableLabs/serverless/aws"
 
   region       = "${var.region}"
@@ -30,6 +31,7 @@ module "serverless" {
 
 # OPTION(Xray): Add X-ray support to lambda execution roles.
 module "serverless_xray" {
+  // source = "../../terraform-aws-serverless/modules/xray" // DEV ONLY
   source = "FormidableLabs/serverless/aws//modules/xray"
 
   # Same variables as for `serverless` module.
