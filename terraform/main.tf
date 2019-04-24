@@ -10,8 +10,8 @@ terraform {
 
 # Base `serverless` IAM support.
 module "serverless" {
-  // source = "../../terraform-aws-serverless" // DEV ONLY
-  source = "FormidableLabs/serverless/aws"
+  source = "../../terraform-aws-serverless" // DEV ONLY
+  // TODO source = "FormidableLabs/serverless/aws"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
@@ -31,8 +31,8 @@ module "serverless" {
 
 # OPTION(Xray): Add X-ray support to lambda execution roles.
 module "serverless_xray" {
-  // source = "../../terraform-aws-serverless/modules/xray" // DEV ONLY
-  source = "FormidableLabs/serverless/aws//modules/xray"
+  source = "../../terraform-aws-serverless/modules/xray" // DEV ONLY
+  // TODO source = "FormidableLabs/serverless/aws//modules/xray"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
