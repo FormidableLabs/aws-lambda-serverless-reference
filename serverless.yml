@@ -51,12 +51,31 @@ functions:
     events: # Use a generic proxy to allow Express app to route.
       - http: ANY /base
       - http: 'ANY /base/{proxy+}'
+
   # SCENARIO - xray: Simple app with Xray tracing.
   xray:
     handler: src/server/xray.handler
     events:
       - http: ANY /xray
       - http: 'ANY /xray/{proxy+}'
+
+  # SCENARIO - vpc: Our vanilla app, but in a VPC
+  vpc:
+    handler: src/server/base.handler
+    events:
+      - http: ANY /vpc
+      - http: 'ANY /vpc/{proxy+}'
+    # VPC: Add in SGs and SNs.
+    # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
+    # vpc:
+    #   securityGroupIds:
+    #   # TODO: 1. custom SG in tf, 2. export
+    #   - Fn::ImportValue: "aws-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
+    #   subnetIds:
+    #   # Talk to AWS VPC resources
+    #   # TODO: export via cloudformation
+    #   - Fn::ImportValue: "aws-${self:custom.service}-${self:custom.stage}-VPCSubnetA"
+    #   - Fn::ImportValue: "aws-${self:custom.service}-${self:custom.stage}-VPCSubnetB"
 
 resources:
   Resources:

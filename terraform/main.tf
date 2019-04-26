@@ -71,8 +71,6 @@ data "aws_availability_zones" "available" {}
 # <Public Spare> D        10.1.112.0/20
 #
 # VPC CIDR Block          10.1.0.0/17     10.1.0.0    10.1.127.255  32768
-#
-# https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
 module "vpc" "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -94,8 +92,24 @@ module "vpc" "vpc" {
   private_subnets = ["10.1.0.0/20", "10.1.16.0/20"]
   public_subnets  = ["10.1.64.0/20", "10.1.80.0/20"]
 
-  tags = "${map(
-    "Service", "${var.service_name}",
-    "Stage", "${var.stage}",
-  )}"
+  tags = "${local.tags}"
+}
+
+# OPTION(VPC): Use a custom, honed SG.
+resource "aws_security_group" "vpc" {
+  name        = "tf-${var.service_name}-${var.stage}"
+  description = "Allow Serverless Lambda networking"
+  vpc_id      = "${module.vpc.vpc_id}"
+
+  egress {
+    description = "Egress: tf-${var.service_name}-${var.stage}"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = "${merge(local.tags, map(
+    "Name", "tf-${var.service_name}-${var.stage}",
+  ))}"
 }
