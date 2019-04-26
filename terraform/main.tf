@@ -12,6 +12,7 @@ terraform {
 module "serverless" {
   // source = "../../terraform-aws-serverless" // DEV ONLY
   source = "FormidableLabs/serverless/aws"
+  version = "0.2.3"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
