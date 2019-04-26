@@ -48,6 +48,8 @@ Getting a `serverless` application into the cloud "the right way" can be a chall
 
 Using this project as a template, you can hopefully take a new `serverless` application and set up "everything else" to support it in AWS the right way, from the start.
 
+A great starting point is our [introduction blog post](https://formidable.com/blog/2019/locking-down-aws-serverless-applications-the-right-way/) that explains existing privilege approaches, motivations for this project, and some quick example infrastructures.
+
 ### Audience
 
 This reference application is meant for developers / architects who are already familiar with AWS infrastructures (and CloudFormation), Terraform, and Serverless framework applications. This project will hopefully provide some guidance / examples to get the whole shebang all the way to a multi-environment deployment and support a team of administrators and engineers for the application.
