@@ -8,7 +8,9 @@ terraform {
   }
 }
 
+###############################################################################
 # Base `serverless` IAM support.
+###############################################################################
 module "serverless" {
   source = "../../terraform-aws-serverless" // DEV ONLY
 
@@ -30,7 +32,9 @@ module "serverless" {
   # opt_many_lambdas    = false
 }
 
+###############################################################################
 # OPTION(Xray): Add X-ray support to lambda execution roles.
+###############################################################################
 module "serverless_xray" {
   source = "../../terraform-aws-serverless/modules/xray" // DEV ONLY
 
@@ -44,6 +48,9 @@ module "serverless_xray" {
 
 data "aws_availability_zones" "available" {}
 
+###############################################################################
+# OPTION(VPC): Create VPC resources and expose to Serverless stack.
+###############################################################################
 # OPTION(VPC): Instantiate an actual VPC
 #
 # ## Available ranges
