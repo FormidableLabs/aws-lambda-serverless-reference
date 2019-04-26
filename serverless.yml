@@ -65,6 +65,8 @@ functions:
     events:
       - http: ANY /vpc
       - http: 'ANY /vpc/{proxy+}'
+    environment:
+      BASE_URL: /vpc
     # VPC: Add in SGs and SNs.
     # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
     vpc:

@@ -163,3 +163,15 @@ STACK
 
   tags = "${local.tags}"
 }
+
+# OPTION(VPC): Add in IAM permissions to humans + lambda execution role.
+module "serverless_vpc" {
+  source = "../../terraform-aws-serverless/modules/vpc" // DEV ONLY
+
+  // TODO source = "FormidableLabs/serverless/aws//modules/vpc"
+
+  # Same variables as for `serverless` module.
+  region       = "${var.region}"
+  service_name = "${var.service_name}"
+  stage        = "${var.stage}"
+}
