@@ -67,15 +67,12 @@ functions:
       - http: 'ANY /vpc/{proxy+}'
     # VPC: Add in SGs and SNs.
     # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
-    # vpc:
-    #   securityGroupIds:
-    #   # TODO: 1. custom SG in tf, 2. export
-    #   - Fn::ImportValue: "aws-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
-    #   subnetIds:
-    #   # Talk to AWS VPC resources
-    #   # TODO: export via cloudformation
-    #   - Fn::ImportValue: "aws-${self:custom.service}-${self:custom.stage}-VPCSubnetA"
-    #   - Fn::ImportValue: "aws-${self:custom.service}-${self:custom.stage}-VPCSubnetB"
+    vpc:
+      securityGroupIds:
+        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
+      subnetIds:
+        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
+        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
 
 resources:
   Resources:

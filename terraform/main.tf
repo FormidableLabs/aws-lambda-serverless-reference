@@ -120,3 +120,46 @@ resource "aws_security_group" "vpc" {
     "Name", "tf-${var.service_name}-${var.stage}",
   ))}"
 }
+
+# OPTION(VPC): Use a small CloudFormation stack to expose outputs for
+# consumption in Serverless. (There are _many_ ways to do this, we just
+# like this as there's no local disk state needed to deploy.)
+#
+# _Note_: CF **requires** 1+ `Resources`, so we throw in the SSM param of the
+# VPC SG because it's small and we need "something". It's otherwise unused.
+#
+# See: https://theburningmonk.com/2019/03/making-terraform-and-serverless-framework-work-together/
+resource "aws_cloudformation_stack" "outputs" {
+  name = "tf-${var.service_name}-${var.stage}-outputs"
+
+  template_body = <<STACK
+Resources:
+  VPCSecurityGroupId:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
+      Value: "${aws_security_group.vpc.id}"
+      Type: String
+
+Outputs:
+  VPCSecurityGroupId:
+    Description: "VPC SG GID"
+    Value: "${aws_security_group.vpc.id}"
+    Export:
+      Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
+
+  VPCPrivateSubnetA:
+    Description: "VPC Private Subnet A"
+    Value: "${module.vpc.private_subnets[0]}"
+    Export:
+      Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetA"
+
+  VPCPrivateSubnetB:
+    Description: "VPC Private Subnet B"
+    Value: "${module.vpc.private_subnets[1]}"
+    Export:
+      Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetB"
+STACK
+
+  tags = "${local.tags}"
+}
