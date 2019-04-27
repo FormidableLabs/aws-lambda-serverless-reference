@@ -46,11 +46,11 @@ module "serverless_xray" {
   stage        = "${var.stage}"
 }
 
-data "aws_availability_zones" "available" {}
-
 ###############################################################################
 # OPTION(VPC): Create VPC resources and expose to Serverless stack.
 ###############################################################################
+data "aws_availability_zones" "available" {}
+
 # OPTION(VPC): Instantiate an actual VPC
 #
 # ## Available ranges
