@@ -12,7 +12,7 @@ terraform {
 # Base `serverless` IAM support.
 ###############################################################################
 module "serverless" {
-  source = "FormidableLabs/serverless/aws/"
+  source = "FormidableLabs/serverless/aws"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
