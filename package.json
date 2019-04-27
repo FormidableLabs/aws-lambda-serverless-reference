@@ -6,6 +6,8 @@
   "author": "Ryan Roemer <ryan.roemer@formidable.com>",
   "license": "MIT",
   "scripts": {
+    "_dev:on": "sed -i '' 's/FormidableLabs\\/serverless\\/aws\\//\\.\\.\\/\\.\\.\\/terraform-aws-serverless/g' terraform/main.tf",
+    "_dev:off": "sed -i '' 's/\\.\\.\\/\\.\\.\\/terraform-aws-serverless/FormidableLabs\\/serverless\\/aws\\//g' terraform/main.tf",
     "env": "echo export STAGE=${STAGE:-localdev}; echo export SERVICE_NAME=simple-reference; echo export AWS_REGION=${AWS_REGION:-us-east-1}; echo export AWS_XRAY_CONTEXT_MISSING=LOG_ERROR",
     "build:toc-files": "find . -name '*.md' -type f -not -path './node_modules/*' -not -path './terraform/.terraform/*' -exec grep -l '<!-- START doctoc' {} \\;",
     "build:toc": "doctoc --notitle $(yarn -s build:toc-files)",
