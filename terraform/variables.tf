@@ -11,3 +11,10 @@ variable "stage" {
 variable "service_name" {
   description = "Name of service / application"
 }
+
+locals {
+  tags = "${map(
+    "Service", "${var.service_name}",
+    "Stage", "${var.stage}",
+  )}"
+}

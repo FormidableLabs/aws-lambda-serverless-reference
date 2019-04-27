@@ -10,7 +10,7 @@ const HOST = process.env.SERVER_HOST || "0.0.0.0";
 const STAGE = process.env.STAGE || process.env.NODE_ENV || "localdev";
 const SERVICE_NAME = process.env.SERVICE_NAME;
 const SERVICE = `${SERVICE_NAME}-${STAGE}`;
-const BASE_URL = "/xray";
+const BASE_URL = process.env.BASE_URL || "/xray";
 
 // Log xray locally.
 if (STAGE === "localdev") {
