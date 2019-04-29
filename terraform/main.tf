@@ -12,7 +12,7 @@ terraform {
 # Base `serverless` IAM support.
 ###############################################################################
 module "serverless" {
-  source = "FormidableLabs/serverless/aws"
+  source = "../../terraform-aws-serverless"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
@@ -34,7 +34,7 @@ module "serverless" {
 # OPTION(Xray): Add X-ray support to lambda execution roles.
 ###############################################################################
 module "serverless_xray" {
-  source = "FormidableLabs/serverless/aws//modules/xray"
+  source = "../../terraform-aws-serverless//modules/xray"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -162,7 +162,7 @@ STACK
 
 # OPTION(VPC): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
-  source = "FormidableLabs/serverless/aws//modules/vpc"
+  source = "../../terraform-aws-serverless//modules/vpc"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
