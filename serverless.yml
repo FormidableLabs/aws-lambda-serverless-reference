@@ -2,28 +2,14 @@
 service: sls-${self:custom.service}
 
 package:
-  # Limit files we will send up to Lambda.
-  # https://serverless.com/framework/docs/providers/aws/guide/packaging/
-  #
-  # AWS constraints:
-  # https://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list
-  # - Zipped bundle: `50 MB`
-  # - Unzipped bundle: `250 MB`
-  #
-  # TODO(6): Use a custom packager.
-  # https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/6
   exclude:
-    - "*"
-    - "aws/**"
-    - "terraform/**"
-    - "**/node_modules/.cache/**"
-    - "**/node_modules/aws-sdk/**" # included on Lambda.
+    - "**"
     - "**/node_modules/.yarn-integrity"
-    - "!package.json"
-
-  # Serverless packages all our deps. We want to exclude the dev ones because
-  # we have such a limited amount of space.
-  excludeDevDependencies: true
+  include:
+    - "src/**"
+    - "node_modules/**"
+    - "package.json"
+    - "!**/.DS_Store"
 
 custom:
   service: ${env:SERVICE_NAME}
@@ -31,6 +17,7 @@ custom:
   stage: ${opt:stage, env:STAGE}
 
 plugins:
+  - serverless-jetpack
   - serverless-offline
 
 provider:
