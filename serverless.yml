@@ -1,6 +1,16 @@
 # CloudFormation output name: `sls-${SERVICE_NAME}-${STAGE}`
 service: sls-${self:custom.service}
 
+package:
+  exclude:
+    - "**"
+    - "**/node_modules/.yarn-integrity"
+  include:
+    - "src/**"
+    - "node_modules/**"
+    - "package.json"
+    - "!**/.DS_Store"
+
 custom:
   service: ${env:SERVICE_NAME}
   region: ${opt:region, env:AWS_REGION}
