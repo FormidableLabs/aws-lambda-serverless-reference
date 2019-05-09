@@ -34,6 +34,7 @@ module "serverless" {
 module "serverless_xray" {
   // source = "../../terraform-aws-serverless/modules/xray" // DEV ONLY
   source = "FormidableLabs/serverless/aws//modules/xray"
+  version = "0.2.3"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
