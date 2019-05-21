@@ -8,13 +8,16 @@ package:
     - "package.json"
     # Source directories
     - "src/**"
-    - "!aws"
+    - "!aws/**"
     - "!terraform"
+    - "!terraform/**"
     # General exclusions
     - "!**/.DS_Store"
     # Dependencies
     - "!node_modules/aws-sdk"
+    - "!node_modules/aws-sdk/**"
     - "!**/node_modules/aws-sdk"
+    - "!**/node_modules/aws-sdk/**"
     - "!**/node_modules/*/CHANGELOG.md"
     - "!**/node_modules/*/HISTORY.md"
     - "!**/node_modules/*/LICENSE"
