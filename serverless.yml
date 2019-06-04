@@ -50,6 +50,21 @@ functions:
     events: # Use a generic proxy to allow Express app to route.
       - http: ANY /base
       - http: 'ANY /base/{proxy+}'
+    package:
+      # Produces `.serverless/base.zip`
+      individually: true
+
+  # SCENARIO - base-reused: Reuse the same artifact as base.
+  base-reused:
+    handler: src/server/base.handler
+    events: # Use a generic proxy to allow Express app to route.
+      - http: ANY /base-reused
+      - http: 'ANY /base-reused/{proxy+}'
+    environment:
+      BASE_URL: /base-reused
+    package:
+      # Reuse `.serverless/base.zip` from `base` function
+      artifact: ".serverless/base.zip"
 
   # SCENARIO - xray: Simple app with Xray tracing.
   xray:
