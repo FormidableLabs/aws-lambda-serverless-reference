@@ -8,6 +8,47 @@ terraform {
   }
 }
 
+data "aws_partition" "current" {}
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role" "lambda" {
+  name               = "tf-${var.service_name}-${var.stage}-lambda-execution"
+  assume_role_policy = "${data.aws_iam_policy_document.lambda_assume.json}"
+}
+
+resource "aws_iam_policy" "lambda" {
+  name   = "tf-${var.service_name}-${var.stage}-lambda-execution"
+  policy = "${data.aws_iam_policy_document.lambda.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda" {
+  role       = "${aws_iam_role.lambda.name}"
+  policy_arn = "${aws_iam_policy.lambda.arn}"
+}
+
+data "aws_iam_policy_document" "lambda_assume" {
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+data "aws_iam_policy_document" "lambda" {
+  statement {
+    actions   = ["logs:CreateLogStream"]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-${var.region}-*:*"]
+  }
+
+  statement {
+    actions   = ["logs:PutLogEvents"]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-${var.region}-*:*:*"]
+  }
+}
+
 ###############################################################################
 # Base `serverless` IAM support.
 ###############################################################################
@@ -18,6 +59,8 @@ module "serverless" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
+
+  lambda_role_name = "${aws_iam_role.lambda.name}"
 
   # (Default values)
   # iam_region          = `*`
@@ -52,6 +95,8 @@ module "serverless_xray" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
+
+  lambda_role_name = "${aws_iam_role.lambda.name}"
 }
 
 ###############################################################################
@@ -182,4 +227,6 @@ module "serverless_vpc" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
+
+  lambda_role_name = "${aws_iam_role.lambda.name}"
 }
