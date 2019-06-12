@@ -40,17 +40,17 @@ data "aws_iam_policy_document" "lambda_assume" {
 data "aws_iam_policy_document" "lambda" {
   statement {
     actions   = ["logs:CreateLogStream"]
-    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-${var.region}-*:*"]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-nonprod-*:*"]
   }
 
   statement {
     actions   = ["logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-${var.region}-*:*:*"]
+    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-nonprod-*:*:*"]
   }
 }
 
 ###############################################################################
-# Base `serverless` IAM support.
+# Base `serverless` IAM support
 ###############################################################################
 module "serverless" {
   source  = "FormidableLabs/serverless/aws"
@@ -59,6 +59,7 @@ module "serverless" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
+  iam_stage    = "nonprod-*"
 
   lambda_role_name = "${aws_iam_role.lambda.name}"
 
@@ -95,6 +96,7 @@ module "serverless_xray" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
+  iam_stage    = "nonprod-*"
 
   lambda_role_name = "${aws_iam_role.lambda.name}"
 }
@@ -227,6 +229,7 @@ module "serverless_vpc" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
+  iam_stage    = "nonprod-*"
 
   lambda_role_name = "${aws_iam_role.lambda.name}"
 }

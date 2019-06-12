@@ -38,6 +38,7 @@ plugins:
 
 provider:
   name: aws
+  role: arn:aws:iam::819013376994:role/tf-${self:custom.service}-${self:custom.stage}-lambda-execution
   runtime: nodejs8.10
   region: ${self:custom.region}
   stage: ${self:custom.stage}

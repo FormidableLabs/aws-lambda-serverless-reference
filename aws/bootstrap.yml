@@ -19,11 +19,6 @@ Parameters:
   Stage:
     Description: Operational stage (e.g., development, staging, production)
     Type: String
-    AllowedValues:
-      - sandbox
-      - development
-      - staging
-      - production
 
 Resources:
   # Enable Terraform state in AWS
