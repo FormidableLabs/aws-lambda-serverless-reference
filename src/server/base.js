@@ -29,7 +29,7 @@ app.use(`${BASE_URL}/layers.txt`, (req, res) => {
   try {
     // eslint-disable-next-line global-require,import/no-unresolved
     const figlet = require("figlet");
-    msg = figlet.textSync("Hello Layers!!!");
+    msg = figlet.textSync("Hello Layers!");
   } catch (e) {
     msg = "Could not import figlet via layers. Sorry, no ASCII art today... :(";
   }
