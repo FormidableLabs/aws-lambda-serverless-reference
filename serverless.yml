@@ -29,7 +29,11 @@ custom:
   stage: ${opt:stage, env:STAGE}
 
 plugins:
-  # TODO: REENABLE - serverless-jetpack
+  # TODO: REENABLE
+  # TODO: Jetpack doesn't correctly exclude layers stuff. e.g.
+  # $ zipinfo -1 .serverless/sls-simple-reference.zip | grep fig
+  # has tons of `layers/**` stuff.
+  # - serverless-jetpack
   - serverless-offline
 
 provider:
