@@ -51,6 +51,7 @@ provider:
 layers:
   figlet:
     path: layers/figlet
+    name: sls-${self:custom.service}-${self:custom.stage}-figlet
     package:
       exclude:
         - "**/yarn.lock"

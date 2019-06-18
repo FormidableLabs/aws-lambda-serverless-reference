@@ -170,3 +170,118 @@ module "serverless_vpc" {
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
 }
+
+###############################################################################
+# OPTION(Layers): Support lambda layers
+#
+# TODO: Extract this all to `terraform-aws-serverless`
+###############################################################################
+data "aws_caller_identity" "current" {}
+
+locals {
+  # TODO: Temp fillers for `terraform-serverless-aws` extraction.
+  iam_partition    = "*"
+  iam_region       = "*"
+  iam_account_id   = "${data.aws_caller_identity.current.account_id}"
+  sls_service_name = "sls-${var.service_name}"
+  tf_service_name  = "tf-${var.service_name}"
+  stage            = "${var.stage}"
+  iam_stage        = "${var.stage}"
+  opt_many_lambdas = false
+
+  tf_group_admin_name     = "${local.tf_service_name}-${local.stage}-admin"
+  tf_group_developer_name = "${local.tf_service_name}-${local.stage}-developer"
+  tf_group_ci_name        = "${local.tf_service_name}-${local.stage}-ci"
+
+  # UNRELATED(BUGS): https://github.com/FormidableLabs/terraform-aws-serverless/issues/49
+  sls_apigw_arn = "arn:${local.iam_partition}:apigateway:${local.iam_region}::/restapis*"
+
+
+  # Serverless lambda layer ARN.
+  # NOTE: Users must define their Serverless layers to match this configuration.
+  # E.g., `name: sls-${self:custom.service}-${self:custom.stage}-LAYER_NAME`
+  sls_layer_arn = "arn:${local.iam_partition}:lambda:${local.iam_region}:${local.iam_account_id}:layer:${local.sls_service_name}-${local.iam_stage}-*"
+}
+
+resource "aws_iam_policy" "update_layers" {
+  name   = "${local.tf_service_name}-${local.stage}-update-layers"
+  path   = "/"
+  policy = "${data.aws_iam_policy_document.update_layers.json}"
+}
+
+data "aws_iam_policy_document" "update_layers" {
+  # Lambda (`sls deploy`)
+  statement {
+    actions = [
+      "lambda:GetLayerVersion",
+      "lambda:PublishLayerVersion",
+    ]
+
+    resources = [
+      "${local.sls_layer_arn}",
+    ]
+  }
+
+  # API Gateway (`sls deploy`)
+  # UNRELATED(BUGS): https://github.com/FormidableLabs/terraform-aws-serverless/issues/49
+  statement {
+    actions = [
+      "apigateway:PATCH",
+    ]
+
+    resources = [
+      "${local.sls_apigw_arn}",
+    ]
+  }
+}
+
+resource "aws_iam_group_policy_attachment" "developer_update_layers" {
+  group      = "${local.tf_group_developer_name}"    # TODO: aws_iam_group.developer.name
+  policy_arn = "${aws_iam_policy.update_layers.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "ci_update_layers" {
+  group      = "${local.tf_group_ci_name}"           # TODO: aws_iam_group.ci.name
+  policy_arn = "${aws_iam_policy.update_layers.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "admin_update_layers" {
+  group      = "${local.tf_group_admin_name}"        # TODO: aws_iam_group.admin.name
+  policy_arn = "${aws_iam_policy.update_layers.arn}"
+}
+
+resource "aws_iam_policy" "cd_layers" {
+  name   = "${local.tf_service_name}-${local.stage}-cd-layers"
+  path   = "/"
+  policy = "${data.aws_iam_policy_document.cd_layers.json}"
+}
+
+data "aws_iam_policy_document" "cd_layers" {
+  # Lambda (`sls deploy`)
+  statement {
+    actions = [
+      "lambda:DeleteLayerVersion",
+    ]
+
+    resources = [
+      "${local.sls_layer_arn}",
+    ]
+  }
+}
+
+resource "aws_iam_group_policy_attachment" "developer_cd_layers" {
+  count      = "${local.opt_many_lambdas ? 1 : 0}"
+  group      = "${local.tf_group_developer_name}"  # TODO: aws_iam_group.developer.name
+  policy_arn = "${aws_iam_policy.cd_layers.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "ci_cd_layers" {
+  count      = "${local.opt_many_lambdas ? 1 : 0}"
+  group      = "${local.tf_group_ci_name}"         # TODO: aws_iam_group.ci.name
+  policy_arn = "${aws_iam_policy.cd_layers.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "admin_cd_layers" {
+  group      = "${local.tf_group_admin_name}"    # TODO: aws_iam_group.admin.name
+  policy_arn = "${aws_iam_policy.cd_layers.arn}"
+}
