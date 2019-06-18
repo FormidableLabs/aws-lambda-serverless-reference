@@ -23,6 +23,20 @@ app.use(`${BASE_URL}/hello.json`, (req, res) => {
     msg: "Simple reference serverless app!"
   });
 });
+// Simple test if our layers import worked.
+app.use(`${BASE_URL}/layers.txt`, (req, res) => {
+  let msg;
+  try {
+    // eslint-disable-next-line global-require,import/no-unresolved
+    const figlet = require("figlet");
+    msg = figlet.textSync("Hello Layers!!!");
+  } catch (e) {
+    msg = "Could not import figlet via layers. Sorry, no ASCII art today... :(";
+  }
+
+  res.set("Content-Type", "text/plain");
+  res.send(msg);
+});
 app.use(`${BASE_URL}/*`, (req, res) => {
   res.send(`
 <html>

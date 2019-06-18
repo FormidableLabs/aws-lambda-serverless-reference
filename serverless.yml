@@ -29,7 +29,7 @@ custom:
   stage: ${opt:stage, env:STAGE}
 
 plugins:
-  - serverless-jetpack
+  # TODO: REENABLE - serverless-jetpack
   - serverless-offline
 
 provider:
@@ -42,6 +42,14 @@ provider:
     SERVICE_NAME: ${self:custom.service}
   timeout: 30 # seconds (`300` max)
   memorySize: 128 # MB value (`1024` default)
+
+# SCENARIO(EXPERIMENT): Layers!
+layers:
+  figlet:
+    path: layers/figlet
+    package:
+      exclude:
+        - "**/yarn.lock"
 
 functions:
   # SCENARIO - base: The simplest, vanilla Serverless app.
@@ -57,6 +65,35 @@ functions:
     events:
       - http: ANY /xray
       - http: 'ANY /xray/{proxy+}'
+
+  # SCENARIO(EXPERIMENT): Layers!
+  #
+  # **Localdev**:
+  # ```sh
+  # # Can't find deps
+  # $ STAGE=sandbox yarn lambda:localdev
+  # $ curl http://127.0.0.1:3001/layers/layers.txt
+  #   Could not import figlet via layers. Sorry, no ASCII art today... :(
+  #
+  # # Hack in deps sort-of-equivalent to deployed.
+  # $ NODE_PATH="${NODE_PATH}:./layers/figlet/nodejs/node_modules" STAGE=sandbox yarn lambda:localdev
+  # $ curl http://127.0.0.1:3001/layers/layers.txt
+  #  _   _      _ _         _                              _ _ _
+  # | | | | ___| | | ___   | |    __ _ _   _  ___ _ __ ___| | | |
+  # | |_| |/ _ \ | |/ _ \  | |   / _` | | | |/ _ \ '__/ __| | | |
+  # |  _  |  __/ | | (_) | | |__| (_| | |_| |  __/ |  \__ \_|_|_|
+  # |_| |_|\___|_|_|\___/  |_____\__,_|\__, |\___|_|  |___(_|_|_)
+  #                                    |___/
+  # ```
+  layers:
+    handler: src/server/base.handler
+    events:
+      - http: ANY /layers
+      - http: 'ANY /layers/{proxy+}'
+    environment:
+      BASE_URL: /layers
+    layers:
+      - { Ref: FigletLambdaLayer }
 
   # SCENARIO - vpc: Our vanilla app, but in a VPC
   vpc:
