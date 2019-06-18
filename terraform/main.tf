@@ -75,7 +75,8 @@ data "aws_availability_zones" "available" {}
 #
 # VPC CIDR Block          10.1.0.0/17     10.1.0.0    10.1.127.255  32768
 module "vpc" "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "1.66.0"
 
   name = "tf-${var.service_name}-${var.stage}"
 
