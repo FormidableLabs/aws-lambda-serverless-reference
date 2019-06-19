@@ -12,7 +12,8 @@ terraform {
 # Base `serverless` IAM support.
 ###############################################################################
 module "serverless" {
-  source = "FormidableLabs/serverless/aws"
+  # TODO: REENABLE
+  source = "../../terraform-aws-serverless"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
@@ -34,7 +35,8 @@ module "serverless" {
 # OPTION(Xray): Add X-ray support to lambda execution roles.
 ###############################################################################
 module "serverless_xray" {
-  source = "FormidableLabs/serverless/aws//modules/xray"
+  # TODO: REENABLE
+  source = "../../terraform-aws-serverless//modules/xray"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -163,7 +165,7 @@ STACK
 
 # OPTION(VPC): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
-  source = "FormidableLabs/serverless/aws//modules/vpc"
+  source = "../../terraform-aws-serverless//modules/vpc"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -193,10 +195,6 @@ locals {
   tf_group_developer_name = "${local.tf_service_name}-${local.stage}-developer"
   tf_group_ci_name        = "${local.tf_service_name}-${local.stage}-ci"
 
-  # UNRELATED(BUGS): https://github.com/FormidableLabs/terraform-aws-serverless/issues/49
-  sls_apigw_arn = "arn:${local.iam_partition}:apigateway:${local.iam_region}::/restapis*"
-
-
   # Serverless lambda layer ARN.
   # NOTE: Users must define their Serverless layers to match this configuration.
   # E.g., `name: sls-${self:custom.service}-${self:custom.stage}-LAYER_NAME`
@@ -219,18 +217,6 @@ data "aws_iam_policy_document" "update_layers" {
 
     resources = [
       "${local.sls_layer_arn}",
-    ]
-  }
-
-  # API Gateway (`sls deploy`)
-  # UNRELATED(BUGS): https://github.com/FormidableLabs/terraform-aws-serverless/issues/49
-  statement {
-    actions = [
-      "apigateway:PATCH",
-    ]
-
-    resources = [
-      "${local.sls_apigw_arn}",
     ]
   }
 }
