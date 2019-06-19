@@ -47,6 +47,10 @@ app.use(`${BASE_URL}/*`, (req, res) => {
       See a JSON response:
       <a href="${FULL_BASE_URL}/hello.json"><code>${FULL_BASE_URL}/hello.json</code></a>
     </p>
+    <p>
+      See layers response: (${FULL_BASE_URL.indexOf("layers") > -1 ? "enabled" : "disabled"})
+      <a href="${FULL_BASE_URL}/layers.txt"><code>${FULL_BASE_URL}/layers.txt</code></a>
+    </p>
   </body>
 </html>
   `);
