@@ -47,15 +47,6 @@ provider:
   timeout: 30 # seconds (`300` max)
   memorySize: 128 # MB value (`1024` default)
 
-# SCENARIO(EXPERIMENT): Layers!
-layers:
-  figlet:
-    path: layers/figlet
-    name: sls-${self:custom.service}-${self:custom.stage}-figlet
-    package:
-      exclude:
-        - "**/yarn.lock"
-
 functions:
   # SCENARIO - base: The simplest, vanilla Serverless app.
   base:
@@ -71,7 +62,7 @@ functions:
       - http: ANY /xray
       - http: 'ANY /xray/{proxy+}'
 
-  # SCENARIO(EXPERIMENT): Layers!
+  # SCENARIO - layers: Conditional import can use code from a layer.
   #
   # **Localdev**:
   # ```sh
@@ -116,6 +107,15 @@ functions:
       subnetIds:
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
+
+# SCENARIO - layers: Add some layers.
+layers:
+  figlet:
+    path: layers/figlet
+    name: sls-${self:custom.service}-${self:custom.stage}-figlet
+    package:
+      exclude:
+        - "**/yarn.lock"
 
 resources:
   Resources:
