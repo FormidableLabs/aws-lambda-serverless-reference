@@ -244,6 +244,8 @@ resource "aws_iam_policy" "cd_layers" {
 
 data "aws_iam_policy_document" "cd_layers" {
   # Lambda (`sls deploy`)
+  # TODO: NOTE -- going to need this to be in `-developer`, which actually makes everything easy...
+  #       No switches or anything. It's **all** in developer
   statement {
     actions = [
       "lambda:DeleteLayerVersion",
