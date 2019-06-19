@@ -201,53 +201,20 @@ locals {
   sls_layer_arn = "arn:${local.iam_partition}:lambda:${local.iam_region}:${local.iam_account_id}:layer:${local.sls_service_name}-${local.iam_stage}-*"
 }
 
-resource "aws_iam_policy" "update_layers" {
-  name   = "${local.tf_service_name}-${local.stage}-update-layers"
+resource "aws_iam_policy" "layers" {
+  name   = "${local.tf_service_name}-${local.stage}-layers"
   path   = "/"
-  policy = "${data.aws_iam_policy_document.update_layers.json}"
+  policy = "${data.aws_iam_policy_document.layers.json}"
 }
 
-data "aws_iam_policy_document" "update_layers" {
-  # Lambda (`sls deploy`)
-  statement {
-    actions = [
-      "lambda:GetLayerVersion",
-      "lambda:PublishLayerVersion",
-    ]
-
-    resources = [
-      "${local.sls_layer_arn}",
-    ]
-  }
-}
-
-resource "aws_iam_group_policy_attachment" "developer_update_layers" {
-  group      = "${local.tf_group_developer_name}"    # TODO: aws_iam_group.developer.name
-  policy_arn = "${aws_iam_policy.update_layers.arn}"
-}
-
-resource "aws_iam_group_policy_attachment" "ci_update_layers" {
-  group      = "${local.tf_group_ci_name}"           # TODO: aws_iam_group.ci.name
-  policy_arn = "${aws_iam_policy.update_layers.arn}"
-}
-
-resource "aws_iam_group_policy_attachment" "admin_update_layers" {
-  group      = "${local.tf_group_admin_name}"        # TODO: aws_iam_group.admin.name
-  policy_arn = "${aws_iam_policy.update_layers.arn}"
-}
-
-resource "aws_iam_policy" "cd_layers" {
-  name   = "${local.tf_service_name}-${local.stage}-cd-layers"
-  path   = "/"
-  policy = "${data.aws_iam_policy_document.cd_layers.json}"
-}
-
-data "aws_iam_policy_document" "cd_layers" {
+data "aws_iam_policy_document" "layers" {
   # Lambda (`sls deploy`)
   # TODO: NOTE -- going to need this to be in `-developer`, which actually makes everything easy...
   #       No switches or anything. It's **all** in developer
   statement {
     actions = [
+      "lambda:GetLayerVersion",
+      "lambda:PublishLayerVersion",
       "lambda:DeleteLayerVersion",
     ]
 
@@ -257,19 +224,17 @@ data "aws_iam_policy_document" "cd_layers" {
   }
 }
 
-resource "aws_iam_group_policy_attachment" "developer_cd_layers" {
-  count      = "${local.opt_many_lambdas ? 1 : 0}"
-  group      = "${local.tf_group_developer_name}"  # TODO: aws_iam_group.developer.name
-  policy_arn = "${aws_iam_policy.cd_layers.arn}"
+resource "aws_iam_group_policy_attachment" "developer_layers" {
+  group      = "${local.tf_group_developer_name}"    # TODO: aws_iam_group.developer.name
+  policy_arn = "${aws_iam_policy.layers.arn}"
 }
 
-resource "aws_iam_group_policy_attachment" "ci_cd_layers" {
-  count      = "${local.opt_many_lambdas ? 1 : 0}"
-  group      = "${local.tf_group_ci_name}"         # TODO: aws_iam_group.ci.name
-  policy_arn = "${aws_iam_policy.cd_layers.arn}"
+resource "aws_iam_group_policy_attachment" "ci_layers" {
+  group      = "${local.tf_group_ci_name}"           # TODO: aws_iam_group.ci.name
+  policy_arn = "${aws_iam_policy.layers.arn}"
 }
 
-resource "aws_iam_group_policy_attachment" "admin_cd_layers" {
-  group      = "${local.tf_group_admin_name}"    # TODO: aws_iam_group.admin.name
-  policy_arn = "${aws_iam_policy.cd_layers.arn}"
+resource "aws_iam_group_policy_attachment" "admin_layers" {
+  group      = "${local.tf_group_admin_name}"        # TODO: aws_iam_group.admin.name
+  policy_arn = "${aws_iam_policy.layers.arn}"
 }
