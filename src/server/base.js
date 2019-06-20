@@ -26,12 +26,23 @@ app.use(`${BASE_URL}/hello.json`, (req, res) => {
 // Simple test if our layers import worked.
 app.use(`${BASE_URL}/layers.txt`, (req, res) => {
   let msg;
+
+  // Dependencies layer
   try {
     // eslint-disable-next-line global-require,import/no-unresolved
     const figlet = require("figlet");
-    msg = figlet.textSync("Hello Layers!");
+    msg = figlet.textSync("Hello Layers");
   } catch (e) {
     msg = "Could not import figlet via layers. Sorry, no ASCII art today... :(";
+  }
+
+  // No dependencies layer
+  try {
+    // eslint-disable-next-line global-require,import/no-unresolved
+    const { repeat } = require("/opt/repeat");
+    msg += `\n\n${repeat("-", msg.split("\n")[0].length)}`;
+  } catch (e) {
+    msg += "\n\nCould not import repeat via layers. Sorry, no exclamations today... :(";
   }
 
   res.set("Content-Type", "text/plain");

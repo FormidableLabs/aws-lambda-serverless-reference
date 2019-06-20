@@ -29,11 +29,7 @@ custom:
   stage: ${opt:stage, env:STAGE}
 
 plugins:
-  # TODO: REENABLE
-  # TODO: Jetpack doesn't correctly exclude layers stuff. e.g.
-  # $ zipinfo -1 .serverless/sls-simple-reference.zip | grep fig
-  # has tons of `layers/**` stuff.
-  # - serverless-jetpack
+  - serverless-jetpack
   - serverless-offline
 
 provider:
@@ -90,6 +86,7 @@ functions:
       BASE_URL: /layers
     layers:
       - { Ref: FigletLambdaLayer }
+      - { Ref: RepeatLambdaLayer }
 
   # SCENARIO - vpc: Our vanilla app, but in a VPC
   vpc:
@@ -110,12 +107,17 @@ functions:
 
 # SCENARIO - layers: Add some layers.
 layers:
+  # Dependencies: Adds `figlet` to a `node_modules` directory.
   figlet:
     path: layers/figlet
     name: sls-${self:custom.service}-${self:custom.stage}-figlet
     package:
       exclude:
         - "**/yarn.lock"
+  # No dependencies: A vanilla JS function.
+  repeat:
+    path: layers/repeat
+    name: sls-${self:custom.service}-${self:custom.stage}-repeat
 
 resources:
   Resources:
