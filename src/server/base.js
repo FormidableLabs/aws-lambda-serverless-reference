@@ -24,7 +24,7 @@ app.use(`${BASE_URL}/hello.json`, (req, res) => {
   });
 });
 // Simple test if our layers import worked.
-app.use(`${BASE_URL}/layers.txt`, (req, res) => {
+app.use(`${BASE_URL}/layers.txt`, async (req, res) => {
   let msg;
 
   // Dependencies layer
