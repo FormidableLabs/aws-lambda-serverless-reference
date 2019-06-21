@@ -35,6 +35,7 @@ custom:
 plugins:
   - serverless-jetpack
   - serverless-offline
+  - serverless-plugin-canary-deployments
 
 provider:
   name: aws
@@ -92,6 +93,16 @@ functions:
       subnetIds:
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
+  
+  # SCENARIO - canary: Canary-deployed Lambda using serverless-plugin-canary-deployments
+  canary:
+    handler: src/server/base.handler
+    events: # Use a generic proxy to allow Express app to route.
+      - http: ANY /canary
+      - http: 'ANY /canary/{proxy+}'
+    deploymentSettings:
+      type: Canary10Percent5Minutes
+      alias: Live
 
   #############################################################################
   # OPTION(layers): Conditional import can use code from a layer.

@@ -8,6 +8,8 @@ terraform {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 ###############################################################################
 # Base `serverless` IAM support.
 ###############################################################################
@@ -177,6 +179,16 @@ STACK
 module "serverless_vpc" {
   source  = "FormidableLabs/serverless/aws//modules/vpc"
   version = "0.6.0"
+
+  # Same variables as for `serverless` module.
+  region       = "${var.region}"
+  service_name = "${var.service_name}"
+  stage        = "${var.stage}"
+}
+
+# OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
+module "serverless_canary" {
+  source = "FormidableLabs/serverless/aws//modules/canary"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
