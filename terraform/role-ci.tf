@@ -13,6 +13,9 @@
 #   - Assuming a role is _subtractive_: it limits your access to the role's
 #     IAM statements. This means that a superuser testing group IAM policies
 #     won't be affected by any other IAM permissions attached to their account.
+
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_role" "ci" {
   name               = "tf-${var.service_name}-${var.stage}-role-ci"
   assume_role_policy = "${data.aws_iam_policy_document.ci_assume.json}"
