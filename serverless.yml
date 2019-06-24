@@ -13,6 +13,10 @@ package:
     - "!terraform/**"
     # General exclusions
     - "!**/.DS_Store"
+    - "!**/yarn.lock"
+    - "!**/package-lock.json"
+    - "!**/node_modules/.yarn-integrity"
+    - "!**/node_modules/.cache/**"
     # Dependencies
     - "!node_modules/aws-sdk"
     - "!node_modules/aws-sdk/**"
@@ -108,12 +112,14 @@ functions:
 # SCENARIO - layers: Add some layers.
 layers:
   # Dependencies: Adds `figlet` to a `node_modules` directory.
+  # Note: Expands to `/opt/nodejs/**/*.js`, so should only do this once.
   figlet:
     path: layers/figlet
     name: sls-${self:custom.service}-${self:custom.stage}-figlet
-    package:
-      exclude:
-        - "**/yarn.lock"
+    jetpack:
+      roots:
+        - layers/figlet/nodejs
+
   # No dependencies: A vanilla JS function.
   repeat:
     path: layers/repeat
