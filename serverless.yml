@@ -112,7 +112,7 @@ functions:
 # SCENARIO - layers: Add some layers.
 layers:
   # Dependencies: Adds `figlet` to a `node_modules` directory.
-  # Note: Expands to `/opt/nodejs/**/*.js`, so should only do this once.
+  # Note: Expands to `/opt/nodejs/node_modules/**/*.js`, so should only do this once.
   figlet:
     path: layers/figlet
     name: sls-${self:custom.service}-${self:custom.stage}-figlet
@@ -121,6 +121,7 @@ layers:
         - layers/figlet/nodejs
 
   # No dependencies: A vanilla JS function.
+  # Note: Expands to `/opt/repeat/*.js` (we have `layers/repeat/repeat` here).
   repeat:
     path: layers/repeat
     name: sls-${self:custom.service}-${self:custom.stage}-repeat
