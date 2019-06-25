@@ -55,12 +55,39 @@ functions:
       - http: ANY /base
       - http: 'ANY /base/{proxy+}'
 
+###############################################################################
+# OPTIONAL STUFF BELOW!!!
+# =======================
+# Everything below here provides specific features and enhancements that you
+# may wish to investigate in a serverless app, such as:
+# - `xray`: Set up AWS Xray tracing
+# - `vpc`: Deploy Lambda in AWS VPC
+# - `layers`: Deploy Lambda Layers alongside Lambda Functions
+###############################################################################
+
   # SCENARIO - xray: Simple app with Xray tracing.
   xray:
     handler: src/server/xray.handler
     events:
       - http: ANY /xray
       - http: 'ANY /xray/{proxy+}'
+
+  # SCENARIO - vpc: Our vanilla app, but in a VPC
+  vpc:
+    handler: src/server/base.handler
+    events:
+      - http: ANY /vpc
+      - http: 'ANY /vpc/{proxy+}'
+    environment:
+      BASE_URL: /vpc
+    # VPC: Add in SGs and SNs.
+    # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
+    vpc:
+      securityGroupIds:
+        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
+      subnetIds:
+        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
+        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
 
   # SCENARIO - layers: Conditional import can use code from a layer.
   #
@@ -91,23 +118,6 @@ functions:
     layers:
       - { Ref: FigletLambdaLayer }
       - { Ref: RepeatLambdaLayer }
-
-  # SCENARIO - vpc: Our vanilla app, but in a VPC
-  vpc:
-    handler: src/server/base.handler
-    events:
-      - http: ANY /vpc
-      - http: 'ANY /vpc/{proxy+}'
-    environment:
-      BASE_URL: /vpc
-    # VPC: Add in SGs and SNs.
-    # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
-    vpc:
-      securityGroupIds:
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
-      subnetIds:
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
 
 # SCENARIO - layers: Add some layers.
 layers:
