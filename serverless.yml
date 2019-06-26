@@ -65,14 +65,18 @@ functions:
 # - `layers`: Deploy Lambda Layers alongside Lambda Functions
 ###############################################################################
 
-  # SCENARIO - xray: Simple app with Xray tracing.
+  #############################################################################
+  # OPTION(xray): Simple app with Xray tracing.
+  #############################################################################
   xray:
     handler: src/server/xray.handler
     events:
       - http: ANY /xray
       - http: 'ANY /xray/{proxy+}'
 
-  # SCENARIO - vpc: Our vanilla app, but in a VPC
+  #############################################################################
+  # OPTION(vpc):  Our vanilla app, but in a VPC
+  #############################################################################
   vpc:
     handler: src/server/base.handler
     events:
@@ -89,7 +93,8 @@ functions:
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
 
-  # SCENARIO - layers: Conditional import can use code from a layer.
+  #############################################################################
+  # OPTION(layers): Conditional import can use code from a layer.
   #
   # **Localdev**:
   # ```sh
@@ -108,6 +113,7 @@ functions:
   # |_| |_|\___|_|_|\___/  |_____\__,_|\__, |\___|_|  |___(_|_|_)
   #                                    |___/
   # ```
+  #############################################################################
   layers:
     handler: src/server/base.handler
     events:
@@ -119,7 +125,9 @@ functions:
       - { Ref: FigletLambdaLayer }
       - { Ref: RepeatLambdaLayer }
 
-# SCENARIO - layers: Add some layers.
+###############################################################################
+# OPTION(layers): Add some layers.
+###############################################################################
 layers:
   # Dependencies: Adds `figlet` to a `node_modules` directory.
   # Note: Expands to `/opt/nodejs/node_modules/**/*.js`, so should only do this once.
@@ -141,7 +149,9 @@ layers:
 
 resources:
   Resources:
+    ###########################################################################
     # OPTION(Xray): Enable Xray tracing.
+    ###########################################################################
     XrayLambdaFunction:
       Properties:
         TracingConfig:
