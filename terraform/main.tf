@@ -215,6 +215,13 @@ Outputs:
     Value: "${module.vpc.private_subnets[1]}"
     Export:
       Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetB"
+  
+  LambdaExecutionRoleArn:
+    Description: "The ARN of the lambda execution role for Serverless to apply"
+    Value: "${aws_iam_role.lambda.arn}"
+    Export:
+      Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleArn"
+
 STACK
 
   tags = "${local.tags}"

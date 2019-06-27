@@ -38,7 +38,8 @@ plugins:
 
 provider:
   name: aws
-  role: arn:aws:iam::819013376994:role/tf-${self:custom.service}-${self:custom.stage}-lambda-execution
+  role:
+    Fn::ImportValue: tf-${self:custom.service}-${self:custom.stage}-LambdaExecutionRoleArn
   runtime: nodejs8.10
   region: ${self:custom.region}
   stage: ${self:custom.stage}
