@@ -12,7 +12,8 @@ terraform {
 # Base `serverless` IAM support.
 ###############################################################################
 module "serverless" {
-  source = "FormidableLabs/serverless/aws"
+  source  = "FormidableLabs/serverless/aws"
+  version = "0.6.0"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
@@ -31,10 +32,21 @@ module "serverless" {
 }
 
 ###############################################################################
-# OPTION(Xray): Add X-ray support to lambda execution roles.
+# OPTIONAL STUFF BELOW!!!
+# =======================
+# Everything below here provides specific features and enhancements that you
+# may wish to investigate in a serverless app, such as:
+# - `xray`: Set up AWS Xray tracing
+# - `vpc`: Deploy Lambda in AWS VPC
+# - `layers`: Deploy Lambda Layers alongside Lambda Functions
+###############################################################################
+
+###############################################################################
+# OPTION(xray): Add X-ray support to lambda execution roles.
 ###############################################################################
 module "serverless_xray" {
-  source = "FormidableLabs/serverless/aws//modules/xray"
+  source  = "FormidableLabs/serverless/aws//modules/xray"
+  version = "0.6.0"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -43,11 +55,11 @@ module "serverless_xray" {
 }
 
 ###############################################################################
-# OPTION(VPC): Create VPC resources and expose to Serverless stack.
+# OPTION(vpc): Create VPC resources and expose to Serverless stack.
 ###############################################################################
 data "aws_availability_zones" "available" {}
 
-# OPTION(VPC): Instantiate an actual VPC
+# OPTION(vpc): Instantiate an actual VPC
 #
 # ## Available ranges
 #
@@ -118,7 +130,7 @@ resource "aws_security_group" "vpc" {
   ))}"
 }
 
-# OPTION(VPC): Use a small CloudFormation stack to expose outputs for
+# OPTION(vpc): Use a small CloudFormation stack to expose outputs for
 # consumption in Serverless. (There are _many_ ways to do this, we just
 # like this as there's no local disk state needed to deploy.)
 #
@@ -161,9 +173,10 @@ STACK
   tags = "${local.tags}"
 }
 
-# OPTION(VPC): Add in IAM permissions to humans + lambda execution role.
+# OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
-  source = "FormidableLabs/serverless/aws//modules/vpc"
+  source  = "FormidableLabs/serverless/aws//modules/vpc"
+  version = "0.6.0"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
