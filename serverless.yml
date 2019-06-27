@@ -104,7 +104,7 @@ functions:
   #   Could not import figlet via layers. Sorry, no ASCII art today... :(
   #
   # # Hack in deps sort-of-equivalent to deployed.
-  # $ NODE_PATH="${NODE_PATH}:./layers/figlet/nodejs/node_modules" STAGE=sandbox yarn lambda:localdev
+  # $ NODE_PATH="${NODE_PATH}:./layers/vendor/nodejs/node_modules" STAGE=sandbox yarn lambda:localdev
   # $ curl http://127.0.0.1:3001/layers/layers.txt
   #  _   _      _ _         _                              _ _ _
   # | | | | ___| | | ___   | |    __ _ _   _  ___ _ __ ___| | | |
@@ -115,28 +115,28 @@ functions:
   # ```
   #############################################################################
   layers:
-    handler: src/server/base.handler
+    handler: src/server/layers.handler
     events:
       - http: ANY /layers
       - http: 'ANY /layers/{proxy+}'
     environment:
       BASE_URL: /layers
     layers:
-      - { Ref: FigletLambdaLayer }
+      - { Ref: VendorLambdaLayer }
       - { Ref: RepeatLambdaLayer }
 
 ###############################################################################
 # OPTION(layers): Add some layers.
 ###############################################################################
 layers:
-  # Dependencies: Adds `figlet` to a `node_modules` directory.
+  # Dependencies: Adds common vendor libs to a `node_modules` directory.
   # Note: Expands to `/opt/nodejs/node_modules/**/*.js`, so should only do this once.
-  figlet:
-    path: layers/figlet
-    name: sls-${self:custom.service}-${self:custom.stage}-figlet
+  vendor:
+    path: layers/vendor
+    name: sls-${self:custom.service}-${self:custom.stage}-vendor
     jetpack:
       roots:
-        - layers/figlet/nodejs
+        - layers/vendor/nodejs
 
   # No dependencies: A vanilla JS function.
   # Note: Expands to `/opt/repeat/*.js` (we have `layers/repeat/repeat` here).
