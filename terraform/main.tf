@@ -54,132 +54,132 @@ module "serverless_xray" {
   stage        = "${var.stage}"
 }
 
-###############################################################################
-# OPTION(vpc): Create VPC resources and expose to Serverless stack.
-###############################################################################
-data "aws_availability_zones" "available" {}
+# ###############################################################################
+# # OPTION(vpc): Create VPC resources and expose to Serverless stack.
+# ###############################################################################
+# data "aws_availability_zones" "available" {}
 
-# OPTION(vpc): Instantiate an actual VPC
-#
-# ## Available ranges
-#
-# - 10.0.0.0 - 10.255.255.255 (10/8 prefix)
-# - 172.16.0.0 - 172.31.255.255 (172.16/12 prefix)
-# - 192.168.0.0 - 192.168.255.255 (192.168/16 prefix)
-#
-# - `10.0.0.0/8` is reserved for ClassicLink VPC. Don't use if need that.
-#   https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html
-# - `172.31.0.0/16` is usually the default VPC group.
-#
-# ## Addressing
-#
-# Param                   CIDR            Start       End           Hosts
-# ======================= =============== =========== ============= ======
-# Private Subnet A        10.1.0.0/20     10.1.0.0    10.1.15.255   4096
-# Private Subnet B        10.1.16.0/20    10.1.16.0   10.1.31.255   4096
-# <Private Spare> C       10.1.32.0/20
-# <Private Spare> D       10.1.48.0/20
-#
-# Public Subnet A         10.1.64.0/20    10.1.64.0   10.1.79.255   4096
-# Public Subnet B         10.1.80.0/20    10.1.80.0   10.1.95.255   4096
-# <Public Spare> C        10.1.96.0/20
-# <Public Spare> D        10.1.112.0/20
-#
-# VPC CIDR Block          10.1.0.0/17     10.1.0.0    10.1.127.255  32768
-module "vpc" "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "1.66.0"
+# # OPTION(vpc): Instantiate an actual VPC
+# #
+# # ## Available ranges
+# #
+# # - 10.0.0.0 - 10.255.255.255 (10/8 prefix)
+# # - 172.16.0.0 - 172.31.255.255 (172.16/12 prefix)
+# # - 192.168.0.0 - 192.168.255.255 (192.168/16 prefix)
+# #
+# # - `10.0.0.0/8` is reserved for ClassicLink VPC. Don't use if need that.
+# #   https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html
+# # - `172.31.0.0/16` is usually the default VPC group.
+# #
+# # ## Addressing
+# #
+# # Param                   CIDR            Start       End           Hosts
+# # ======================= =============== =========== ============= ======
+# # Private Subnet A        10.1.0.0/20     10.1.0.0    10.1.15.255   4096
+# # Private Subnet B        10.1.16.0/20    10.1.16.0   10.1.31.255   4096
+# # <Private Spare> C       10.1.32.0/20
+# # <Private Spare> D       10.1.48.0/20
+# #
+# # Public Subnet A         10.1.64.0/20    10.1.64.0   10.1.79.255   4096
+# # Public Subnet B         10.1.80.0/20    10.1.80.0   10.1.95.255   4096
+# # <Public Spare> C        10.1.96.0/20
+# # <Public Spare> D        10.1.112.0/20
+# #
+# # VPC CIDR Block          10.1.0.0/17     10.1.0.0    10.1.127.255  32768
+# module "vpc" "vpc" {
+#   source  = "terraform-aws-modules/vpc/aws"
+#   version = "1.66.0"
 
-  name = "tf-${var.service_name}-${var.stage}"
+#   name = "tf-${var.service_name}-${var.stage}"
 
-  # Dynamically get 2 availabile AZs for failover.
-  azs = [
-    "${data.aws_availability_zones.available.names[0]}",
-    "${data.aws_availability_zones.available.names[1]}",
-  ]
+#   # Dynamically get 2 availabile AZs for failover.
+#   azs = [
+#     "${data.aws_availability_zones.available.names[0]}",
+#     "${data.aws_availability_zones.available.names[1]}",
+#   ]
 
-  # Features
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  enable_nat_gateway   = true
+#   # Features
+#   enable_dns_hostnames = true
+#   enable_dns_support   = true
+#   enable_nat_gateway   = true
 
-  # Networking
-  cidr            = "10.1.0.0/17"
-  private_subnets = ["10.1.0.0/20", "10.1.16.0/20"]
-  public_subnets  = ["10.1.64.0/20", "10.1.80.0/20"]
+#   # Networking
+#   cidr            = "10.1.0.0/17"
+#   private_subnets = ["10.1.0.0/20", "10.1.16.0/20"]
+#   public_subnets  = ["10.1.64.0/20", "10.1.80.0/20"]
 
-  tags = "${local.tags}"
-}
+#   tags = "${local.tags}"
+# }
 
-# OPTION(VPC): Use a custom, honed SG.
-resource "aws_security_group" "vpc" {
-  name        = "tf-${var.service_name}-${var.stage}"
-  description = "Allow Serverless Lambda networking"
-  vpc_id      = "${module.vpc.vpc_id}"
+# # OPTION(VPC): Use a custom, honed SG.
+# resource "aws_security_group" "vpc" {
+#   name        = "tf-${var.service_name}-${var.stage}"
+#   description = "Allow Serverless Lambda networking"
+#   vpc_id      = "${module.vpc.vpc_id}"
 
-  egress {
-    description = "Egress: tf-${var.service_name}-${var.stage}"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   egress {
+#     description = "Egress: tf-${var.service_name}-${var.stage}"
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  tags = "${merge(local.tags, map(
-    "Name", "tf-${var.service_name}-${var.stage}",
-  ))}"
-}
+#   tags = "${merge(local.tags, map(
+#     "Name", "tf-${var.service_name}-${var.stage}",
+#   ))}"
+# }
 
-# OPTION(vpc): Use a small CloudFormation stack to expose outputs for
-# consumption in Serverless. (There are _many_ ways to do this, we just
-# like this as there's no local disk state needed to deploy.)
-#
-# _Note_: CF **requires** 1+ `Resources`, so we throw in the SSM param of the
-# VPC SG because it's small and we need "something". It's otherwise unused.
-#
-# See: https://theburningmonk.com/2019/03/making-terraform-and-serverless-framework-work-together/
-resource "aws_cloudformation_stack" "outputs" {
-  name = "tf-${var.service_name}-${var.stage}-outputs"
+# # OPTION(vpc): Use a small CloudFormation stack to expose outputs for
+# # consumption in Serverless. (There are _many_ ways to do this, we just
+# # like this as there's no local disk state needed to deploy.)
+# #
+# # _Note_: CF **requires** 1+ `Resources`, so we throw in the SSM param of the
+# # VPC SG because it's small and we need "something". It's otherwise unused.
+# #
+# # See: https://theburningmonk.com/2019/03/making-terraform-and-serverless-framework-work-together/
+# resource "aws_cloudformation_stack" "outputs" {
+#   name = "tf-${var.service_name}-${var.stage}-outputs"
 
-  template_body = <<STACK
-Resources:
-  VPCSecurityGroupId:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
-      Value: "${aws_security_group.vpc.id}"
-      Type: String
+#   template_body = <<STACK
+# Resources:
+#   VPCSecurityGroupId:
+#     Type: AWS::SSM::Parameter
+#     Properties:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
+#       Value: "${aws_security_group.vpc.id}"
+#       Type: String
 
-Outputs:
-  VPCSecurityGroupId:
-    Description: "VPC SG GID"
-    Value: "${aws_security_group.vpc.id}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
+# Outputs:
+#   VPCSecurityGroupId:
+#     Description: "VPC SG GID"
+#     Value: "${aws_security_group.vpc.id}"
+#     Export:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
 
-  VPCPrivateSubnetA:
-    Description: "VPC Private Subnet A"
-    Value: "${module.vpc.private_subnets[0]}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetA"
+#   VPCPrivateSubnetA:
+#     Description: "VPC Private Subnet A"
+#     Value: "${module.vpc.private_subnets[0]}"
+#     Export:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetA"
 
-  VPCPrivateSubnetB:
-    Description: "VPC Private Subnet B"
-    Value: "${module.vpc.private_subnets[1]}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetB"
-STACK
+#   VPCPrivateSubnetB:
+#     Description: "VPC Private Subnet B"
+#     Value: "${module.vpc.private_subnets[1]}"
+#     Export:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetB"
+# STACK
 
-  tags = "${local.tags}"
-}
+#   tags = "${local.tags}"
+# }
 
-# OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
-module "serverless_vpc" {
-  source  = "FormidableLabs/serverless/aws//modules/vpc"
-  version = "0.6.0"
+# # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
+# module "serverless_vpc" {
+#   source  = "FormidableLabs/serverless/aws//modules/vpc"
+#   version = "0.6.0"
 
-  # Same variables as for `serverless` module.
-  region       = "${var.region}"
-  service_name = "${var.service_name}"
-  stage        = "${var.stage}"
-}
+#   # Same variables as for `serverless` module.
+#   region       = "${var.region}"
+#   service_name = "${var.service_name}"
+#   stage        = "${var.stage}"
+# }

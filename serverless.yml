@@ -74,24 +74,24 @@ functions:
       - http: ANY /xray
       - http: 'ANY /xray/{proxy+}'
 
-  #############################################################################
-  # OPTION(vpc):  Our vanilla app, but in a VPC
-  #############################################################################
-  vpc:
-    handler: src/server/base.handler
-    events:
-      - http: ANY /vpc
-      - http: 'ANY /vpc/{proxy+}'
-    environment:
-      BASE_URL: /vpc
-    # VPC: Add in SGs and SNs.
-    # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
-    vpc:
-      securityGroupIds:
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
-      subnetIds:
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
+  # #############################################################################
+  # # OPTION(vpc):  Our vanilla app, but in a VPC
+  # #############################################################################
+  # vpc:
+  #   handler: src/server/base.handler
+  #   events:
+  #     - http: ANY /vpc
+  #     - http: 'ANY /vpc/{proxy+}'
+  #   environment:
+  #     BASE_URL: /vpc
+  #   # VPC: Add in SGs and SNs.
+  #   # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
+  #   vpc:
+  #     securityGroupIds:
+  #       - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
+  #     subnetIds:
+  #       - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
+  #       - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
 
   #############################################################################
   # OPTION(layers): Conditional import can use code from a layer.
