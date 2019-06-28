@@ -8,47 +8,6 @@ terraform {
   }
 }
 
-data "aws_partition" "current" {}
-data "aws_caller_identity" "current" {}
-
-resource "aws_iam_role" "lambda" {
-  name               = "tf-${var.service_name}-${var.stage}-lambda-execution"
-  assume_role_policy = "${data.aws_iam_policy_document.lambda_assume.json}"
-}
-
-resource "aws_iam_policy" "lambda" {
-  name   = "tf-${var.service_name}-${var.stage}-lambda-execution"
-  policy = "${data.aws_iam_policy_document.lambda.json}"
-}
-
-resource "aws_iam_role_policy_attachment" "lambda" {
-  role       = "${aws_iam_role.lambda.name}"
-  policy_arn = "${aws_iam_policy.lambda.arn}"
-}
-
-data "aws_iam_policy_document" "lambda_assume" {
-  statement {
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
-data "aws_iam_policy_document" "lambda" {
-  statement {
-    actions   = ["logs:CreateLogStream"]
-    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-nonprod-*:*"]
-  }
-
-  statement {
-    actions   = ["logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-nonprod-*:*:*"]
-  }
-}
-
 ###############################################################################
 # Base `serverless` IAM support
 ###############################################################################
@@ -59,7 +18,6 @@ module "serverless" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
-  iam_stage    = "nonprod-*"
 
   lambda_role_name = "${aws_iam_role.lambda.name}"
 
@@ -96,7 +54,6 @@ module "serverless_xray" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
-  iam_stage    = "nonprod-*"
 
   lambda_role_name = "${aws_iam_role.lambda.name}"
 }
@@ -158,7 +115,7 @@ module "vpc" "vpc" {
   tags = "${local.tags}"
 }
 
-# OPTION(VPC): Use a custom, honed SG.
+# OPTION(vpc): Use a custom, honed SG.
 resource "aws_security_group" "vpc" {
   name        = "tf-${var.service_name}-${var.stage}"
   description = "Allow Serverless Lambda networking"
@@ -185,8 +142,8 @@ resource "aws_security_group" "vpc" {
 # VPC SG because it's small and we need "something". It's otherwise unused.
 #
 # See: https://theburningmonk.com/2019/03/making-terraform-and-serverless-framework-work-together/
-resource "aws_cloudformation_stack" "outputs" {
-  name = "tf-${var.service_name}-${var.stage}-outputs"
+resource "aws_cloudformation_stack" "outputs_vpc" {
+  name = "tf-${var.service_name}-${var.stage}-outputs-vpc"
 
   template_body = <<STACK
 Resources:
@@ -215,12 +172,6 @@ Outputs:
     Value: "${module.vpc.private_subnets[1]}"
     Export:
       Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetB"
-  
-  LambdaExecutionRoleArn:
-    Description: "The ARN of the lambda execution role for Serverless to apply"
-    Value: "${aws_iam_role.lambda.arn}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleArn"
 
 STACK
 
@@ -236,7 +187,85 @@ module "serverless_vpc" {
   region       = "${var.region}"
   service_name = "${var.service_name}"
   stage        = "${var.stage}"
-  iam_stage    = "nonprod-*"
 
   lambda_role_name = "${aws_iam_role.lambda.name}"
+}
+
+###############################################################################
+# OPTION(custom_role): Create and use a custom Lambda role in Serverless.
+###############################################################################
+data "aws_partition" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role" "lambda" {
+  name               = "tf-${var.service_name}-${var.stage}-lambda-execution"
+  assume_role_policy = "${data.aws_iam_policy_document.lambda_assume.json}"
+}
+
+resource "aws_iam_policy" "lambda" {
+  name   = "tf-${var.service_name}-${var.stage}-lambda-execution"
+  policy = "${data.aws_iam_policy_document.lambda.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda" {
+  role       = "${aws_iam_role.lambda.name}"
+  policy_arn = "${aws_iam_policy.lambda.arn}"
+}
+
+# OPTION(custom_role): Allow Lambda to assume the custom role.
+data "aws_iam_policy_document" "lambda_assume" {
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+# OPTION(custom_role): Replicate the log permissions from the default Serverless role.
+data "aws_iam_policy_document" "lambda" {
+  statement {
+    actions   = ["logs:CreateLogStream"]
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-${var.stage}:*"]
+  }
+
+  statement {
+    actions   = ["logs:PutLogEvents"]
+    resources = ["arn:${data.aws_partition.current.partition}:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/sls-${var.service_name}-${var.stage}:*:*"]
+  }
+}
+
+# OPTION(custom_role): Use a small CloudFormation stack to expose outputs for
+# consumption in Serverless. (There are _many_ ways to do this, we just
+# like this as there's no local disk state needed to deploy.)
+#
+# _Note_: CF **requires** 1+ `Resources`, so we throw in the SSM param of the
+# role ARN because it's small and we need "something". It's otherwise unused.
+#
+# See: https://theburningmonk.com/2019/03/making-terraform-and-serverless-framework-work-together/
+resource "aws_cloudformation_stack" "outputs_custom_role" {
+  name = "tf-${var.service_name}-${var.stage}-outputs-custom-role"
+
+  template_body = <<STACK
+Resources:
+  LambdaExecutionRoleArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleArn"
+      Value: "${aws_iam_role.lambda.arn}"
+      Type: String
+
+Outputs:
+  LambdaExecutionRoleArn:
+    Description: "The ARN of the lambda execution role for Serverless to apply"
+    Value: "${aws_iam_role.lambda.arn}"
+    Export:
+      Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleArn"
+
+STACK
+
+  tags = "${local.tags}"
 }
