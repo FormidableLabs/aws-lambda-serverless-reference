@@ -76,7 +76,7 @@ functions:
       - http: 'ANY /xray/{proxy+}'
 
   #############################################################################
-  # OPTION(vpc):  Our vanilla app, but in a VPC
+  # OPTION(vpc): Our vanilla app, but in a VPC
   #############################################################################
   vpc:
     handler: src/server/base.handler
@@ -94,7 +94,9 @@ functions:
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
         - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
   
-  # SCENARIO - canary: Canary-deployed Lambda using serverless-plugin-canary-deployments
+  #############################################################################
+  # OPTION(canary): Canary-deployed Lambda using serverless-plugin-canary-deployments
+  ############################################################################
   canary:
     handler: src/server/base.handler
     events: # Use a generic proxy to allow Express app to route.
