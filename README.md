@@ -176,7 +176,9 @@ $ aws --version
 
 #### Terraform
 
-Install Terraform CLI following [the instructions](https://learn.hashicorp.com/terraform/getting-started/install).
+Install [`tfenv`]() from Homebrew: `brew install tfenv`. Then, in the root of the repo, run `tfenv install` to download and  use the pinned version of Terraform for this project.
+
+Note that `tfenv` conflicts with Homebrew `terraform` and must be uninstalled first. You can still use `tfenv` to install and use the latest Terraform version in projects that don't have a `.terraform-version` file.
 
 #### AWS Credentials
 
@@ -494,6 +496,6 @@ $ STAGE=sandbox yarn run lambda:rollback -t 2019-02-07T00:35:56.362Z
 [serverless]: https://serverless.com/
 [serverless-http]: https://github.com/dougmoscrop/serverless-http
 [CloudFormation]: https://aws.amazon.com/cloudformation/
-[Terraform]: https://www.terraform.io
+[tfenv]: https://github.com/tfutils/tfenv
 [HCL]: https://www.terraform.io/docs/configuration/syntax.html
 [FormidableLabs/serverless/aws]: https://registry.terraform.io/modules/FormidableLabs/serverless/aws
