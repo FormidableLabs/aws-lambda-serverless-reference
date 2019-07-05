@@ -38,6 +38,10 @@ plugins:
 
 provider:
   name: aws
+  role:
+    Fn::ImportValue: tf-${self:custom.service}-${self:custom.stage}-LambdaExecutionRoleArn
+    # OPTION(custom_role): use a custom role provided to terraform-aws-serverless
+    # Fn::ImportValue: tf-${self:custom.service}-${self:custom.stage}-LambdaExecutionRoleCustomArn
   runtime: nodejs8.10
   region: ${self:custom.region}
   stage: ${self:custom.stage}
@@ -124,17 +128,6 @@ functions:
     layers:
       - { Ref: VendorLambdaLayer }
       - { Ref: RepeatLambdaLayer }
-  
-  #############################################################################
-  # OPTION(custom_role): Our vanilla app, but using a custom Lambda role
-  #############################################################################
-  customRole:
-    role:
-      Fn::ImportValue: tf-${self:custom.service}-${self:custom.stage}-LambdaExecutionRoleArn
-    handler: src/server/base.handler
-    events:
-      - http: ANY /custom-role
-      - http: 'ANY /custom-role/{proxy+}'
 
 ###############################################################################
 # OPTION(layers): Add some layers.
