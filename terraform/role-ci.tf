@@ -13,7 +13,10 @@
 #   - Assuming a role is _subtractive_: it limits your access to the role's
 #     IAM statements. This means that a superuser testing group IAM policies
 #     won't be affected by any other IAM permissions attached to their account.
-
+# 
+# We're investigating how best to integrate the assume role policies/principals
+# into terraform-aws-serverless here:
+# https://github.com/FormidableLabs/terraform-aws-serverless/issues/53
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "ci" {
