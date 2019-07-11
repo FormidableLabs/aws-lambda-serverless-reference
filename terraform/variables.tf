@@ -5,7 +5,7 @@ variable "region" {
 
 variable "stage" {
   description = "The stage/environment to deploy to. Suggest: `sandbox`, `development`, `staging`, `production`."
-  default     = "nonprod"
+  default     = "sandbox"
 }
 
 variable "service_name" {
