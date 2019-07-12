@@ -13,7 +13,7 @@ terraform {
 ###############################################################################
 module "serverless" {
   source  = "FormidableLabs/serverless/aws"
-  version = "0.6.0"
+  version = "0.7.0"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
@@ -50,7 +50,7 @@ module "serverless" {
 ###############################################################################
 module "serverless_xray" {
   source  = "FormidableLabs/serverless/aws//modules/xray"
-  version = "0.6.0"
+  version = "0.7.0"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -185,7 +185,7 @@ STACK
 # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
   source  = "FormidableLabs/serverless/aws//modules/vpc"
-  version = "0.6.0"
+  version = "0.7.0"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -201,8 +201,6 @@ module "serverless_vpc" {
 # OPTION(custom_roles): Create and use a custom Lambda role in Serverless.
 ###############################################################################
 data "aws_partition" "current" {}
-
-data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "lambda_execution_custom" {
   name               = "tf-${var.service_name}-${var.stage}-lambda-execution-custom"
@@ -255,7 +253,8 @@ STACK
 
 # OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
 module "serverless_canary" {
-  source = "FormidableLabs/serverless/aws//modules/canary"
+  source  = "FormidableLabs/serverless/aws//modules/canary"
+  version = "0.7.0"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
