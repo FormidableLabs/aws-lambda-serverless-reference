@@ -17,7 +17,6 @@ package:
     - "!**/node_modules/.yarn-integrity"
     - "!**/node_modules/.cache/**"
     # Dependencies
-    - "!node_modules/aws-sdk/**"
     - "!**/node_modules/aws-sdk/**"
     - "!**/node_modules/{@*/*,*}/CHANGELOG.md"
     - "!**/node_modules/{@*/*,*}/HISTORY.md"
