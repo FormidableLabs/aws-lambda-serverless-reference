@@ -8,6 +8,7 @@ package:
     - "package.json"
     # Source directories
     - "src/**"
+    - "!.*/**"
     - "!aws/**"
     - "!terraform/**"
     # General exclusions
