@@ -163,7 +163,7 @@ layers:
     name: sls-${self:custom.service}-${self:custom.stage}-repeat
     package:
       include:
-        - "*.js" # Override service-level `"!*"`
+        - "*.js"
 
 resources:
   Resources:
