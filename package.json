@@ -55,7 +55,7 @@
     "eslint-plugin-promise": "^4.0.1",
     "nodemon": "^1.18.9",
     "serverless": "^1.45.1",
-    "serverless-jetpack": "^0.5.0",
+    "serverless-jetpack": "^0.6.0",
     "serverless-offline": "^4.2.1",
     "serverless-plugin-canary-deployments": "^0.4.7"
   }
