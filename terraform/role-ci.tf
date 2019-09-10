@@ -86,6 +86,7 @@ resource "aws_iam_role_policy_attachment" "ci_canary" {
 }
 
 resource "aws_iam_group_policy_attachment" "ci_role" {
+  count      = "${length(module.serverless.iam_group_ci_name) > 0 ? 1 : 0}"
   group      = "${module.serverless.iam_group_ci_name}"
   policy_arn = "${aws_iam_policy.ci_role.arn}"
 }
