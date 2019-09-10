@@ -12,7 +12,7 @@ terraform {
 # Base `serverless` IAM support
 ###############################################################################
 module "serverless" {
-  source  = "FormidableLabs/serverless/aws"
+  source  = "../../terraform-aws-serverless"
   version = "0.7.0"
 
   region       = "${var.region}"
@@ -33,6 +33,7 @@ module "serverless" {
   # role_developer_name = `developer`
   # role_ci_name        = `ci`
   # opt_many_lambdas    = false
+  opt_disable_groups = true
 }
 
 ###############################################################################
@@ -49,13 +50,14 @@ module "serverless" {
 # OPTION(xray): Add X-ray support to lambda execution roles.
 ###############################################################################
 module "serverless_xray" {
-  source  = "FormidableLabs/serverless/aws//modules/xray"
+  source  = "../../terraform-aws-serverless//modules/xray"
   version = "0.7.0"
 
   # Same variables as for `serverless` module.
-  region       = "${var.region}"
-  service_name = "${var.service_name}"
-  stage        = "${var.stage}"
+  region             = "${var.region}"
+  service_name       = "${var.service_name}"
+  stage              = "${var.stage}"
+  opt_disable_groups = true
 
   # OPTION(custom_role): override the Lambda execution role that
   # terraform-aws-serverless creates by default.
@@ -184,13 +186,14 @@ STACK
 
 # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
-  source  = "FormidableLabs/serverless/aws//modules/vpc"
+  source  = "../../terraform-aws-serverless//modules/vpc"
   version = "0.7.0"
 
   # Same variables as for `serverless` module.
-  region       = "${var.region}"
-  service_name = "${var.service_name}"
-  stage        = "${var.stage}"
+  region             = "${var.region}"
+  service_name       = "${var.service_name}"
+  stage              = "${var.stage}"
+  opt_disable_groups = true
 
   # OPTION(custom_role): override the Lambda execution role that
   # terraform-aws-serverless creates by default.
@@ -253,11 +256,12 @@ STACK
 
 # OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
 module "serverless_canary" {
-  source  = "FormidableLabs/serverless/aws//modules/canary"
+  source  = "../../terraform-aws-serverless//modules/canary"
   version = "0.7.0"
 
   # Same variables as for `serverless` module.
-  region       = "${var.region}"
-  service_name = "${var.service_name}"
-  stage        = "${var.stage}"
+  region             = "${var.region}"
+  service_name       = "${var.service_name}"
+  stage              = "${var.stage}"
+  opt_disable_groups = true
 }
