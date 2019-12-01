@@ -353,6 +353,8 @@ This needs to be run once to be able to run any other Terraform commands.
 $ STAGE=sandbox yarn run tf:service:init
 ```
 
+> ⚠️ **Warning**: You need to run `yarn run tf:service:init` **every** time you change `STAGE` or other core environmental setup before you can mutate anything with the stack (like `yarn run tf:service:apply`). Failure to do so will result in bad things like incorrect stage variables applied to an old, stale stage in the underlying Terraform local disk cache.
+
 **Plan** the Terraform stack.
 
 Terraform allows you to see what's going to happen / change in your cloud infrastructure before actually committing to it, so it is _always_ a good idea to run a plan before any Terraform mutating command.
