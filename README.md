@@ -244,7 +244,21 @@ Enter Access Key Id: INSERT
 Enter Secret Key: INSERT
 
 # Execute a command with temporary creds
-$ aws-vault exec FIRST.LAST -- STAGE=sandbox yarn run lambda:info
+$ STAGE=sandbox aws-vault exec FIRST.LAST -- yarn run lambda:info
+```
+
+> ⚠️ **Warning**: Certain IAM role creation commands do not work with the default `aws-vault` setup if you have MFA set up (which you should).
+
+The following commands need extra command support:
+
+* `yarn tf:service:apply`
+* `yarn tf:service:_delete`
+
+We have a [research ticket](https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/38) to better handle sessions with MFA, but in the meantime you can simply add the `--no-session` flag to any `aws-vault` commands that need it. E.g.
+
+```sh
+# Execute a command with temporary creds
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn tf:service:apply
 ```
 
 ## Development
@@ -373,6 +387,9 @@ $ STAGE=sandbox yarn run tf:service:apply
 
 # YOLO: run without checking first
 $ STAGE=sandbox yarn run tf:service:apply -auto-approve
+
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn tf:service:apply
 ```
 
 **Delete** the Terraform stack:
@@ -386,6 +403,9 @@ $ STAGE=sandbox yarn run tf:service:_delete
 
 # YOLO: run without checking first
 $ STAGE=sandbox yarn run tf:service:_delete -auto-approve
+
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn tf:service:_delete
 ```
 
 **Visualize** the Terraform stack:
