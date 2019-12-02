@@ -253,6 +253,7 @@ The following commands need extra command support:
 
 * `yarn tf:service:apply`
 * `yarn tf:service:_delete`
+* `yarn lambda:deploy`
 
 We have a [research ticket](https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/38) to better handle sessions with MFA, but in the meantime you can simply add the `--no-session` flag to any `aws-vault` commands that need it. E.g.
 
@@ -439,6 +440,9 @@ is required (to effect the underlying CloudFormation changes).
 ```sh
 $ STAGE=sandbox yarn run lambda:deploy
 
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn lambda:deploy
+
 # Check on app and endpoints.
 $ STAGE=sandbox yarn run lambda:info
 ```
@@ -498,6 +502,9 @@ https://console.aws.amazon.com/cloudwatch/home?#logStream:group=/aws/lambda/sls-
 
 ```sh
 $ STAGE=sandbox yarn run lambda:deploy
+
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn lambda:deploy
 ```
 
 **Rollback** to a previous Lambda deployment:
