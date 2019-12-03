@@ -244,8 +244,27 @@ Enter Access Key Id: INSERT
 Enter Secret Key: INSERT
 
 # Execute a command with temporary creds
-$ aws-vault exec FIRST.LAST -- STAGE=sandbox yarn run lambda:info
+$ STAGE=sandbox aws-vault exec FIRST.LAST -- yarn run lambda:info
 ```
+
+> ⚠️ **Warning**: Certain IAM role creation commands do not work with the default `aws-vault` setup if you have MFA set up (which you should).
+
+The following commands that definitely need extra command support:
+
+* `yarn tf:service:apply`
+* `yarn tf:service:_delete`
+* `yarn lambda:deploy`
+
+We have a [research ticket](https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/38) to better handle sessions with MFA, but in the meantime you can simply add the `--no-session` flag to any `aws-vault` commands that need it. E.g.
+
+```sh
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- <ACTUAL_COMMAND>
+
+# E.g.
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn tf:service:apply
+```
+
+In practice, it is probably easier in the meantime to just always add the `--no-session` flag when using `aws-vault exec`.
 
 ## Development
 
@@ -353,6 +372,8 @@ This needs to be run once to be able to run any other Terraform commands.
 $ STAGE=sandbox yarn run tf:service:init
 ```
 
+> ⚠️ **Warning**: You need to run `yarn run tf:service:init` **every** time you change `STAGE` or other core environmental setup before you can mutate anything with the stack (like `yarn run tf:service:apply`). Failure to do so will result in bad things like incorrect stage variables applied to an old, stale stage in the underlying Terraform local disk cache.
+
 **Plan** the Terraform stack.
 
 Terraform allows you to see what's going to happen / change in your cloud infrastructure before actually committing to it, so it is _always_ a good idea to run a plan before any Terraform mutating command.
@@ -371,6 +392,9 @@ $ STAGE=sandbox yarn run tf:service:apply
 
 # YOLO: run without checking first
 $ STAGE=sandbox yarn run tf:service:apply -auto-approve
+
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn tf:service:apply
 ```
 
 **Delete** the Terraform stack:
@@ -384,6 +408,9 @@ $ STAGE=sandbox yarn run tf:service:_delete
 
 # YOLO: run without checking first
 $ STAGE=sandbox yarn run tf:service:_delete -auto-approve
+
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn tf:service:_delete
 ```
 
 **Visualize** the Terraform stack:
@@ -416,6 +443,9 @@ is required (to effect the underlying CloudFormation changes).
 
 ```sh
 $ STAGE=sandbox yarn run lambda:deploy
+
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn lambda:deploy
 
 # Check on app and endpoints.
 $ STAGE=sandbox yarn run lambda:info
@@ -476,6 +506,9 @@ https://console.aws.amazon.com/cloudwatch/home?#logStream:group=/aws/lambda/sls-
 
 ```sh
 $ STAGE=sandbox yarn run lambda:deploy
+
+# **WARNING**: If using `aws-vault`, remember `--no-session`!
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn lambda:deploy
 ```
 
 **Rollback** to a previous Lambda deployment:
