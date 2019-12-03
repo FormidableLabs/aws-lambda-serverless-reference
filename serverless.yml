@@ -114,6 +114,7 @@ functions:
       - http: ANY /canary
       - http: 'ANY /canary/{proxy+}'
     deploymentSettings:
+      # See all options here: https://github.com/davidgf/serverless-plugin-canary-deployments#configuration
       type: AllAtOnce
       alias: Live
 
