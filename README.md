@@ -249,7 +249,7 @@ $ STAGE=sandbox aws-vault exec FIRST.LAST -- yarn run lambda:info
 
 > ⚠️ **Warning**: Certain IAM role creation commands do not work with the default `aws-vault` setup if you have MFA set up (which you should).
 
-The following commands need extra command support:
+The following commands that definitely need extra command support:
 
 * `yarn tf:service:apply`
 * `yarn tf:service:_delete`
@@ -258,9 +258,13 @@ The following commands need extra command support:
 We have a [research ticket](https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues/38) to better handle sessions with MFA, but in the meantime you can simply add the `--no-session` flag to any `aws-vault` commands that need it. E.g.
 
 ```sh
-# Execute a command with temporary creds
+$ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- <ACTUAL_COMMAND>
+
+# E.g.
 $ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- STAGE=sandbox yarn tf:service:apply
 ```
+
+In practice, it is probably easier in the meantime to just always add the `--no-session` flag when using `aws-vault exec`.
 
 ## Development
 
