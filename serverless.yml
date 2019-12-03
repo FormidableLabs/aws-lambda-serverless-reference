@@ -59,17 +59,17 @@ functions:
     handler: src/server/base.handler
     events: # Use a generic proxy to allow Express app to route.
       - http: ANY /base
-      - http: "ANY /base/{proxy+}"
+      - http: 'ANY /base/{proxy+}'
 
-  ###############################################################################
-  # OPTIONAL STUFF BELOW!!!
-  # =======================
-  # Everything below here provides specific features and enhancements that you
-  # may wish to investigate in a serverless app, such as:
-  # - `xray`: Set up AWS Xray tracing
-  # - `vpc`: Deploy Lambda in AWS VPC
-  # - `layers`: Deploy Lambda Layers alongside Lambda Functions
-  ###############################################################################
+###############################################################################
+# OPTIONAL STUFF BELOW!!!
+# =======================
+# Everything below here provides specific features and enhancements that you
+# may wish to investigate in a serverless app, such as:
+# - `xray`: Set up AWS Xray tracing
+# - `vpc`: Deploy Lambda in AWS VPC
+# - `layers`: Deploy Lambda Layers alongside Lambda Functions
+###############################################################################
 
   #############################################################################
   # OPTION(xray): Simple app with Xray tracing.
@@ -78,7 +78,7 @@ functions:
     handler: src/server/xray.handler
     events:
       - http: ANY /xray
-      - http: "ANY /xray/{proxy+}"
+      - http: 'ANY /xray/{proxy+}'
 
   #############################################################################
   # OPTION(vpc): Our vanilla app, but in a VPC
@@ -87,7 +87,7 @@ functions:
     handler: src/server/base.handler
     events:
       - http: ANY /vpc
-      - http: "ANY /vpc/{proxy+}"
+      - http: 'ANY /vpc/{proxy+}'
     environment:
       BASE_URL: /vpc
     # VPC: Add in SGs and SNs.
@@ -106,7 +106,7 @@ functions:
     handler: src/server/base.handler
     events: # Use a generic proxy to allow Express app to route.
       - http: ANY /canary
-      - http: "ANY /canary/{proxy+}"
+      - http: 'ANY /canary/{proxy+}'
     deploymentSettings:
       type: Canary10Percent5Minutes
       alias: Live
@@ -136,7 +136,7 @@ functions:
     handler: src/server/layers.handler
     events:
       - http: ANY /layers
-      - http: "ANY /layers/{proxy+}"
+      - http: 'ANY /layers/{proxy+}'
     environment:
       BASE_URL: /layers
     layers:
