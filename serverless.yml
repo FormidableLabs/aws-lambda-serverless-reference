@@ -101,14 +101,20 @@ functions:
 
   #############################################################################
   # OPTION(canary): Canary-deployed Lambda using serverless-plugin-canary-deployments
-  ############################################################################
+  # To watch the canary deploy's progress for the sandbox environment, view its
+  # CodeDeploy project here:
+  # https://us-east-1.console.aws.amazon.com/codesuite/codedeploy/applications/sls-simple-reference-sandbox-SlssimplereferencesandboxDeploymentApplication-LI2MS1UTYKZT?region=us-east-1
+  #
+  # To view canary progress for other stages, find them in CodeDeploy Applications:
+  # https://us-east-1.console.aws.amazon.com/codesuite/codedeploy/applications?region=us-east-1
+  #############################################################################
   canary:
     handler: src/server/base.handler
     events: # Use a generic proxy to allow Express app to route.
       - http: ANY /canary
       - http: 'ANY /canary/{proxy+}'
     deploymentSettings:
-      type: Canary10Percent5Minutes
+      type: AllAtOnce
       alias: Live
 
   #############################################################################
