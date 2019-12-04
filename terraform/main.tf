@@ -8,6 +8,9 @@ terraform {
   }
 }
 
+# A resource group is an optional, but very nice thing to have, especially
+# when managing resources across CF + TF + SLS.
+
 ###############################################################################
 # Base `serverless` IAM support
 ###############################################################################
