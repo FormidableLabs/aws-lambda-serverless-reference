@@ -439,6 +439,10 @@ This section discusses developers getting code and secrets deployed (manually fr
 
 All commands in this section should be run by AWS users with attached IAM groups provisioned by our support stack of `tf-${SERVICE_NAME}-${STAGE}-(admin|developer|ci)`. The configuration for this section is controlled by: [`serverless.yml`](./serverless.yml)
 
+> ⚠️ **Prod/Real World Warning**: This reference application deploys from local laptops for ease of instruction. However, our laptops are usually a different operating system than the target Lambda Linux execution environment. This is an issue for binary dependencies in `node_modules` which are OS-specific and zipped up and shipped with the Lambda application.
+>
+> Our reference application presently does not have binary dependencies, but as a best practice for a real world Lambda application, you should not package and deploy from a different OS than your target Lambda execution environment. This means if locally deploying using an appropriate Docker setup for packaging, or using a CI/CD system that matches the Lambda OS to package and deploy the application.
+
 ### Admin Deployment
 
 These actions are reserved for `-admin` users.
