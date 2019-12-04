@@ -367,6 +367,8 @@ This step provisions a Terraform stack to provide us with IAM groups and other A
 
 All commands in this section should be run by an AWS superuser.  The configuration for all of this section is controlled by: [`terraform/main.tf`](./terraform/main.tf). Commands and resources created are all prefixed with `tf` as a project-specific choice for ease of identification.
 
+> ℹ️ **Note**: We use the `terraform` CLI program under the hood directly for all of our Terraform work. This is simple and good for learning, but in a real world infrastructure has several limitations (such as the pain of remembering to re-`init` environments on switching, etc.). Consequently, if you're looking to maintain multiple environments with Terraform in the real world, consider more flexible meta tools like [terragrunt](https://github.com/gruntwork-io/terragrunt).
+
 **Init** your local Terraform state.
 
 This needs to be run once to be able to run any other Terraform commands.
