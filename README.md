@@ -1,5 +1,6 @@
 AWS Lambda Serverless Reference
 ===============================
+[![Travis Status][trav_img]][trav_site]
 
 A simple "hello world" reference app for the [`FormidableLabs/serverless/aws`][FormidableLabs/serverless/aws] Terraform module, using the [serverless][] framework targeting an AWS Lambda deploy.
 
@@ -532,3 +533,6 @@ $ STAGE=sandbox yarn run lambda:rollback -t 2019-02-07T00:35:56.362Z
 [tfenv]: https://github.com/tfutils/tfenv
 [HCL]: https://www.terraform.io/docs/configuration/syntax.html
 [FormidableLabs/serverless/aws]: https://registry.terraform.io/modules/FormidableLabs/serverless/aws
+
+[trav_img]: https://api.travis-ci.com/FormidableLabs/aws-lambda-serverless-reference.svg
+[trav_site]: https://travis-ci.com/FormidableLabs/aws-lambda-serverless-reference

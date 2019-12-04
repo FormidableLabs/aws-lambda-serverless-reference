@@ -1,0 +1,25 @@
+language: node_js
+
+node_js:
+  - "12"
+
+branches:
+  only:
+    - master
+
+env:
+  global:
+    - TF_VERSION=0.11.14
+
+before_install:
+  - wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip -O /tmp/terraform.zip
+  - sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
+
+install:
+  # Fail if lockfile outdated.
+  # https://yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-frozen-lockfile
+  - yarn install --frozen-lockfile
+
+script:
+  - yarn --version
+  - yarn run check:ci
