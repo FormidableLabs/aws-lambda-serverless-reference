@@ -15,7 +15,7 @@
     "build": "yarn build:toc &&  yarn tf:terraform fmt",
     "lint": "eslint .",
     "check:git-dirty": "test -z \"$(git status --porcelain)\" || (echo \"ERROR: Found git dirty files:\n$(git status --porcelain)\" && exit 1)",
-    "check:ci": "yarn run check && yarn check:git-dirty",
+    "check:ci": "yarn run check && yarn build && yarn check:git-dirty",
     "check": "yarn run lint",
     "node:localdev": "eval $(yarn -s env) && SERVER_PORT=${SERVER_PORT:-3000} SERVER_HOST=${SERVER_HOST:-0.0.0.0} nodemon --watch src src/server/${SCENARIO:-base}.js",
     "lambda:sls": "eval $(yarn -s env) && sls -s ${STAGE}",
