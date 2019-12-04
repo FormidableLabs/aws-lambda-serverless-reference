@@ -8,12 +8,40 @@ terraform {
   }
 }
 
+# A resource group is an optional, but very nice thing to have, especially
+# when managing resources across CF + TF + SLS.
+#
+# This RG aggregates all of CF + TF + SLS together by `Service` + `Stage`.
+resource "aws_resourcegroups_group" "test" {
+  name = "tf-${var.service_name}-${var.stage}"
+
+  resource_query {
+    query = <<JSON
+{
+  "ResourceTypeFilters": [
+    "AWS::AllSupported"
+  ],
+  "TagFilters": [
+    {
+      "Key": "Service",
+      "Values": ["${var.service_name}"]
+    },
+    {
+      "Key": "Stage",
+      "Values": ["${var.stage}"]
+    }
+  ]
+}
+JSON
+  }
+}
+
 ###############################################################################
 # Base `serverless` IAM support
 ###############################################################################
 module "serverless" {
   source  = "FormidableLabs/serverless/aws"
-  version = "0.8.4"
+  version = "0.8.5"
 
   region       = "${var.region}"
   service_name = "${var.service_name}"
@@ -50,7 +78,7 @@ module "serverless" {
 ###############################################################################
 module "serverless_xray" {
   source  = "FormidableLabs/serverless/aws//modules/xray"
-  version = "0.8.4"
+  version = "0.8.5"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -185,7 +213,7 @@ STACK
 # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
   source  = "FormidableLabs/serverless/aws//modules/vpc"
-  version = "0.8.4"
+  version = "0.8.5"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
@@ -205,6 +233,7 @@ data "aws_partition" "current" {}
 resource "aws_iam_role" "lambda_execution_custom" {
   name               = "tf-${var.service_name}-${var.stage}-lambda-execution-custom"
   assume_role_policy = "${data.aws_iam_policy_document.lambda_execution_custom_assume.json}"
+  tags               = "${local.tags}"
 }
 
 # OPTION(custom_roles): Allow Lambda to assume the custom role.
@@ -254,7 +283,7 @@ STACK
 # OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
 module "serverless_canary" {
   source  = "FormidableLabs/serverless/aws//modules/canary"
-  version = "0.8.4"
+  version = "0.8.5"
 
   # Same variables as for `serverless` module.
   region       = "${var.region}"
