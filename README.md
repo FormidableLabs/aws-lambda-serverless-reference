@@ -539,6 +539,7 @@ $ STAGE=sandbox yarn run lambda:rollback -t 2019-02-07T00:35:56.362Z
 
 [serverless]: https://serverless.com/
 [serverless-http]: https://github.com/dougmoscrop/serverless-http
+[Terraform]: https://www.terraform.io
 [CloudFormation]: https://aws.amazon.com/cloudformation/
 [tfenv]: https://github.com/tfutils/tfenv
 [HCL]: https://www.terraform.io/docs/configuration/syntax.html
