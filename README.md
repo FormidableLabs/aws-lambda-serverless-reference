@@ -55,6 +55,8 @@ A great starting point is our [introduction blog post](https://formidable.com/bl
 
 This reference application is meant for developers / architects who are already familiar with AWS infrastructures (and CloudFormation), Terraform, and Serverless framework applications. This project will hopefully provide some guidance / examples to get the whole shebang all the way to a multi-environment deployment and support a team of administrators and engineers for the application.
 
+For folks (particularly [Formidables](https://formidable.com/)) interested in learning more about how we construct our production cloud infrastructures, head over to our [learning page](./LEARNING.md).
+
 ### Stack
 
 We use very simple, very common tools to allow a mostly vanilla Express server to run in localdev / Docker like a normal Node.js HTTP server and _also_ as a Lambda function exposed via API Gateway.
@@ -370,10 +372,12 @@ All commands in this section should be run by an AWS superuser.  The configurati
 This needs to be run once to be able to run any other Terraform commands.
 
 ```sh
-$ STAGE=sandbox yarn run tf:service:init
+$ STAGE=sandbox yarn run tf:service:init --reconfigure
 ```
 
 > ⚠️ **Warning**: You need to run `yarn run tf:service:init` **every** time you change `STAGE` or other core environmental setup before you can mutate anything with the stack (like `yarn run tf:service:apply`). Failure to do so will result in bad things like incorrect stage variables applied to an old, stale stage in the underlying Terraform local disk cache.
+
+> ℹ️ **Note**: We suggest using the `--reconfigure` flag every time you run `init` when switching environments so that the remote state (in S3) remains the source of truth and accidental stuff you do on local disk doesn't end up corrupting things.
 
 **Plan** the Terraform stack.
 
