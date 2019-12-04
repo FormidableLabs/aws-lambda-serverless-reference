@@ -205,6 +205,7 @@ data "aws_partition" "current" {}
 resource "aws_iam_role" "lambda_execution_custom" {
   name               = "tf-${var.service_name}-${var.stage}-lambda-execution-custom"
   assume_role_policy = "${data.aws_iam_policy_document.lambda_execution_custom_assume.json}"
+  tags               = "${local.tags}"
 }
 
 # OPTION(custom_roles): Allow Lambda to assume the custom role.

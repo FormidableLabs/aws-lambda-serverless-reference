@@ -1,6 +1,6 @@
 # Example of how to use policies from terraform-aws-serverless to create
 # a developer/CI role that any user in the developer group can assume.
-# 
+#
 # Useful for:
 # - Delegating permissions to another AWS account.
 # - Testing permissions without creating a new user and switching to it.
@@ -13,7 +13,7 @@
 #   - Assuming a role is _subtractive_: it limits your access to the role's
 #     IAM statements. This means that a superuser testing group IAM policies
 #     won't be affected by any other IAM permissions attached to their account.
-# 
+#
 # We're investigating how best to integrate the assume role policies/principals
 # into terraform-aws-serverless here:
 # https://github.com/FormidableLabs/terraform-aws-serverless/issues/53
@@ -22,6 +22,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_iam_role" "ci" {
   name               = "tf-${var.service_name}-${var.stage}-role-ci"
   assume_role_policy = "${data.aws_iam_policy_document.ci_assume.json}"
+  tags               = "${local.tags}"
 }
 
 data "aws_iam_policy_document" "ci_assume" {
