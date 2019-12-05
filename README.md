@@ -139,6 +139,10 @@ We rely on IAM roles to limit privileges to the minimum necessary to provision, 
     * `tf-${SERVICE_NAME}-${STAGE}-developer`: Can deploy the Severless app.
     * `tf-${SERVICE_NAME}-${STAGE}-ci`: Can deploy the Severless app.
 
+> ℹ️ **Note**: Our cloud infrastructure is based on an approach of a single shared AWS account (with many limited IAM users). A more secure and differently complex option is to use _separate_ AWS accounts for different stages/environments for infrastructures/applications. We discuss these approaches more in our [introductory blog post](https://formidable.com/blog/2019/locking-down-aws-serverless-applications-the-right-way/#existing-privilege-approaches) for the `FormidableLabs/serverless/aws` Terraform module.
+>
+> In practice, many real world projects will segregate at least the ultimate production infrastructure to a separate AWS account and potentially utilize multiple infrastructures within a shared non-production AWS account. There are many ways to implement a robust production privilege approach, and this reference project implements just one of them!
+
 ## Installation
 
 ### Node.js (Runtime)
