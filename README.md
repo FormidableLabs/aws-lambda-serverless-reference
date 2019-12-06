@@ -183,7 +183,7 @@ $ aws --version
 
 #### Terraform
 
-Install [`tfenv`]() from Homebrew: `brew install tfenv`. Then, in the root of the repo, run `tfenv install` to download and  use the pinned version of Terraform for this project.
+Install [tfenv][] from Homebrew: `brew install tfenv`. Then, in the root of the repo, run `tfenv install` to download and  use the pinned version of Terraform for this project.
 
 Note that `tfenv` conflicts with Homebrew `terraform` and must be uninstalled first. You can still use `tfenv` to install and use the latest Terraform version in projects that don't have a `.terraform-version` file.
 
