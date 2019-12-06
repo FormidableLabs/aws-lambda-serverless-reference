@@ -12,7 +12,7 @@ terraform {
 # when managing resources across CF + TF + SLS.
 #
 # This RG aggregates all of CF + TF + SLS together by `Service` + `Stage`.
-resource "aws_resourcegroups_group" "test" {
+resource "aws_resourcegroups_group" "resources_stage" {
   name = "tf-${var.service_name}-${var.stage}"
 
   resource_query {
