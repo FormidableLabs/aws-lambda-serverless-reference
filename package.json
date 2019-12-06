@@ -48,7 +48,7 @@
     "aws-xray-sdk-core": "^2.2.0",
     "aws-xray-sdk-express": "^2.2.0",
     "express": "^4.16.4",
-    "serverless-http": "^1.9.0"
+    "serverless-http": "^2.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
@@ -59,9 +59,9 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-promise": "^4.0.1",
     "nodemon": "^1.18.9",
-    "serverless": "^1.45.1",
-    "serverless-jetpack": "^0.6.0",
-    "serverless-offline": "^4.2.1",
-    "serverless-plugin-canary-deployments": "^0.4.7"
+    "serverless": "^1.59.2",
+    "serverless-jetpack": "^0.7.0",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-canary-deployments": "^0.4.8"
   }
 }
