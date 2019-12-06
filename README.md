@@ -55,6 +55,8 @@ A great starting point is our [introduction blog post](https://formidable.com/bl
 
 This reference application is meant for developers / architects who are already familiar with AWS infrastructures (and CloudFormation), Terraform, and Serverless framework applications. This project will hopefully provide some guidance / examples to get the whole shebang all the way to a multi-environment deployment and support a team of administrators and engineers for the application.
 
+For folks (particularly [Formidables](https://formidable.com/)) interested in learning more about how we construct our production cloud infrastructures, head over to our [learning page](./LEARNING.md).
+
 ### Stack
 
 We use very simple, very common tools to allow a mostly vanilla Express server to run in localdev / Docker like a normal Node.js HTTP server and _also_ as a Lambda function exposed via API Gateway.
@@ -136,6 +138,10 @@ We rely on IAM roles to limit privileges to the minimum necessary to provision, 
     * `tf-${SERVICE_NAME}-${STAGE}-admin`: Can create/delete/update the Severless app.
     * `tf-${SERVICE_NAME}-${STAGE}-developer`: Can deploy the Severless app.
     * `tf-${SERVICE_NAME}-${STAGE}-ci`: Can deploy the Severless app.
+
+> ℹ️ **Note**: Our cloud infrastructure is based on an approach of a single shared AWS account (with many limited IAM users). A more secure and differently complex option is to use _separate_ AWS accounts for different stages/environments for infrastructures/applications. We discuss these approaches more in our [introductory blog post](https://formidable.com/blog/2019/locking-down-aws-serverless-applications-the-right-way/#existing-privilege-approaches) for the `FormidableLabs/serverless/aws` Terraform module.
+>
+> In practice, many real world projects will segregate at least the ultimate production infrastructure to a separate AWS account and potentially utilize multiple infrastructures within a shared non-production AWS account. There are many ways to implement a robust production privilege approach, and this reference project implements just one of them!
 
 ## Installation
 
@@ -365,15 +371,19 @@ This step provisions a Terraform stack to provide us with IAM groups and other A
 
 All commands in this section should be run by an AWS superuser.  The configuration for all of this section is controlled by: [`terraform/main.tf`](./terraform/main.tf). Commands and resources created are all prefixed with `tf` as a project-specific choice for ease of identification.
 
+> ℹ️ **Note**: We use the `terraform` CLI program under the hood directly for all of our Terraform work. This is simple and good for learning, but in a real world infrastructure has several limitations (such as the pain of remembering to re-`init` environments on switching, etc.). Consequently, if you're looking to maintain multiple environments with Terraform in the real world, consider more flexible meta tools like [terragrunt](https://github.com/gruntwork-io/terragrunt).
+
 **Init** your local Terraform state.
 
 This needs to be run once to be able to run any other Terraform commands.
 
 ```sh
-$ STAGE=sandbox yarn run tf:service:init
+$ STAGE=sandbox yarn run tf:service:init --reconfigure
 ```
 
 > ⚠️ **Warning**: You need to run `yarn run tf:service:init` **every** time you change `STAGE` or other core environmental setup before you can mutate anything with the stack (like `yarn run tf:service:apply`). Failure to do so will result in bad things like incorrect stage variables applied to an old, stale stage in the underlying Terraform local disk cache.
+
+> ℹ️ **Note**: We suggest using the `--reconfigure` flag every time you run `init` when switching environments so that the remote state (in S3) remains the source of truth and accidental stuff you do on local disk doesn't end up corrupting things.
 
 **Plan** the Terraform stack.
 
@@ -434,6 +444,10 @@ $ STAGE=sandbox yarn run -s tf:terraform graph | dot -Tsvg > ~/Desktop/infrastru
 This section discusses developers getting code and secrets deployed (manually from local machines to an AWS `development` playground or automated via CI).
 
 All commands in this section should be run by AWS users with attached IAM groups provisioned by our support stack of `tf-${SERVICE_NAME}-${STAGE}-(admin|developer|ci)`. The configuration for this section is controlled by: [`serverless.yml`](./serverless.yml)
+
+> ⚠️ **Prod/Real World Warning**: This reference application deploys from local laptops for ease of instruction. However, our laptops are usually a different operating system than the target Lambda Linux execution environment. This is an issue for binary dependencies in `node_modules` which are OS-specific and zipped up and shipped with the Lambda application.
+>
+> Our reference application presently does not have binary dependencies, but as a best practice for a real world Lambda application, you should not package and deploy from a different OS than your target Lambda execution environment. This means if locally deploying using an appropriate Docker setup for packaging, or using a CI/CD system that matches the Lambda OS to package and deploy the application.
 
 ### Admin Deployment
 
@@ -529,6 +543,7 @@ $ STAGE=sandbox yarn run lambda:rollback -t 2019-02-07T00:35:56.362Z
 
 [serverless]: https://serverless.com/
 [serverless-http]: https://github.com/dougmoscrop/serverless-http
+[Terraform]: https://www.terraform.io
 [CloudFormation]: https://aws.amazon.com/cloudformation/
 [tfenv]: https://github.com/tfutils/tfenv
 [HCL]: https://www.terraform.io/docs/configuration/syntax.html
