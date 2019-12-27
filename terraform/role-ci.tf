@@ -17,12 +17,13 @@
 # We're investigating how best to integrate the assume role policies/principals
 # into terraform-aws-serverless here:
 # https://github.com/FormidableLabs/terraform-aws-serverless/issues/53
-data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "current" {
+}
 
 resource "aws_iam_role" "ci" {
   name               = "tf-${var.service_name}-${var.stage}-role-ci"
-  assume_role_policy = "${data.aws_iam_policy_document.ci_assume.json}"
-  tags               = "${local.tags}"
+  assume_role_policy = data.aws_iam_policy_document.ci_assume.json
+  tags               = local.tags
 }
 
 data "aws_iam_policy_document" "ci_assume" {
@@ -67,39 +68,40 @@ data "aws_iam_policy_document" "ci_assume" {
 
 # Attach policies from main and child modules to this role
 resource "aws_iam_role_policy_attachment" "ci" {
-  role       = "${aws_iam_role.ci.name}"
-  policy_arn = "${module.serverless.iam_policy_ci_arn}"
+  role       = aws_iam_role.ci.name
+  policy_arn = module.serverless.iam_policy_ci_arn
 }
 
 resource "aws_iam_role_policy_attachment" "ci_cd_lambdas" {
-  role       = "${aws_iam_role.ci.name}"
-  policy_arn = "${module.serverless.iam_policy_cd_lambdas_arn}"
+  role       = aws_iam_role.ci.name
+  policy_arn = module.serverless.iam_policy_cd_lambdas_arn
 }
 
 resource "aws_iam_role_policy_attachment" "ci_vpc" {
-  role       = "${aws_iam_role.ci.name}"
-  policy_arn = "${module.serverless_vpc.iam_policy_ci_arn}"
+  role       = aws_iam_role.ci.name
+  policy_arn = module.serverless_vpc.iam_policy_ci_arn
 }
 
 resource "aws_iam_role_policy_attachment" "ci_canary" {
-  role       = "${aws_iam_role.ci.name}"
-  policy_arn = "${module.serverless_canary.iam_policy_ci_arn}"
+  role       = aws_iam_role.ci.name
+  policy_arn = module.serverless_canary.iam_policy_ci_arn
 }
 
 resource "aws_iam_group_policy_attachment" "ci_role" {
-  group      = "${module.serverless.iam_group_ci_name}"
-  policy_arn = "${aws_iam_policy.ci_role.arn}"
+  group      = module.serverless.iam_group_ci_name
+  policy_arn = aws_iam_policy.ci_role.arn
 }
 
 resource "aws_iam_policy" "ci_role" {
   name   = "tf-${var.service_name}-${var.stage}-policy-ci-role"
-  policy = "${data.aws_iam_policy_document.ci_role.json}"
+  policy = data.aws_iam_policy_document.ci_role.json
 }
 
 # Allow a principal to assume this role.
 data "aws_iam_policy_document" "ci_role" {
   statement {
     actions   = ["sts:AssumeRole"]
-    resources = ["${aws_iam_role.ci.arn}"]
+    resources = [aws_iam_role.ci.arn]
   }
 }
+
