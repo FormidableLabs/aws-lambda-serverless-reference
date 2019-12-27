@@ -96,7 +96,7 @@ Your superadmin user should be reserved only for work on _new_ environments. If 
 
     ... then go and kick the tires on a URL!
 
-1. Delete the serverless application and re-deploy it as-is off `master` brnach:
+1. Delete the serverless application and re-deploy it as-is off `master` branch:
 
     ```sh
     # Be careful!

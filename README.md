@@ -290,12 +290,12 @@ $ yarn node:localdev
 
 See it in action!:
 
-- [http://127.0.0.1:3000/hello.json](http://127.0.0.1:3000/hello.json)
+- [http://127.0.0.1:3000/base/hello.json](http://127.0.0.1:3000/base/hello.json)
 
 Or from the command line:
 
 ```sh
-$ curl -X POST "http://127.0.0.1:3000/hello.json" \
+$ curl -X POST "http://127.0.0.1:3000/base/hello.json" \
   -H "Content-Type: application/json"
 ```
 
@@ -309,7 +309,7 @@ $ yarn lambda:localdev
 
 See it in action!:
 
-- [http://127.0.0.1:3001/hello.json](http://127.0.0.1:3001/hello.json)
+- [http://127.0.0.1:3001/base/hello.json](http://127.0.0.1:3001/base/hello.json)
 
 ## Support Stack Provisioning (Superuser)
 
