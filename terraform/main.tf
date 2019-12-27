@@ -42,7 +42,7 @@ JSON
 ###############################################################################
 module "serverless" {
   source  = "FormidableLabs/serverless/aws"
-  version = "0.8.6"
+  version = "0.8.8"
 
   region       = var.region
   service_name = var.service_name
@@ -78,7 +78,7 @@ module "serverless" {
 ###############################################################################
 module "serverless_xray" {
   source  = "FormidableLabs/serverless/aws//modules/xray"
-  version = "0.8.6"
+  version = "0.8.8"
 
   # Same variables as for `serverless` module.
   region       = var.region
@@ -217,7 +217,7 @@ STACK
 # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
   source  = "FormidableLabs/serverless/aws//modules/vpc"
-  version = "0.8.6"
+  version = "0.8.8"
 
   # Same variables as for `serverless` module.
   region       = var.region
@@ -288,7 +288,7 @@ STACK
 # OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
 module "serverless_canary" {
   source  = "FormidableLabs/serverless/aws//modules/canary"
-  version = "0.8.6"
+  version = "0.8.8"
 
   # Same variables as for `serverless` module.
   region       = var.region
