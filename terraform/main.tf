@@ -42,7 +42,6 @@ JSON
 ###############################################################################
 module "serverless" {
   source  = "../../terraform-aws-serverless"
-  version = "0.8.6"
 
   region       = var.region
   service_name = var.service_name
@@ -77,8 +76,7 @@ module "serverless" {
 # OPTION(xray): Add X-ray support to lambda execution roles.
 ###############################################################################
 module "serverless_xray" {
-  source  = "FormidableLabs/serverless/aws//modules/xray"
-  version = "0.8.6"
+  source  = "../../terraform-aws-serverless/modules/xray"
 
   # Same variables as for `serverless` module.
   region       = var.region
@@ -216,8 +214,7 @@ STACK
 
 # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
-  source  = "FormidableLabs/serverless/aws//modules/vpc"
-  version = "0.8.6"
+  source  = "../../terraform-aws-serverless/modules/vpc"
 
   # Same variables as for `serverless` module.
   region       = var.region
@@ -287,8 +284,7 @@ STACK
 
 # OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
 module "serverless_canary" {
-  source  = "FormidableLabs/serverless/aws//modules/canary"
-  version = "0.8.6"
+  source  = "../../terraform-aws-serverless/modules/canary"
 
   # Same variables as for `serverless` module.
   region       = var.region
