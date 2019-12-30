@@ -32,7 +32,7 @@ custom:
 plugins:
   - serverless-jetpack
   - serverless-offline
-  - serverless-plugin-canary-deployments
+  # - serverless-plugin-canary-deployments
 
 provider:
   name: aws
@@ -87,30 +87,30 @@ functions:
   #############################################################################
   # OPTION(xray): Simple app with Xray tracing.
   #############################################################################
-  xray:
-    handler: src/server/xray.handler
-    events:
-      - http: ANY /xray
-      - http: 'ANY /xray/{proxy+}'
+  # xray:
+  #   handler: src/server/xray.handler
+  #   events:
+  #     - http: ANY /xray
+  #     - http: 'ANY /xray/{proxy+}'
 
   #############################################################################
   # OPTION(vpc): Our vanilla app, but in a VPC
   #############################################################################
-  vpc:
-    handler: src/server/base.handler
-    events:
-      - http: ANY /vpc
-      - http: 'ANY /vpc/{proxy+}'
-    environment:
-      BASE_URL: /vpc
-    # VPC: Add in SGs and SNs.
-    # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
-    vpc:
-      securityGroupIds:
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
-      subnetIds:
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
-        - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
+  # vpc:
+  #   handler: src/server/base.handler
+  #   events:
+  #     - http: ANY /vpc
+  #     - http: 'ANY /vpc/{proxy+}'
+  #   environment:
+  #     BASE_URL: /vpc
+  #   # VPC: Add in SGs and SNs.
+  #   # https://serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
+  #   vpc:
+  #     securityGroupIds:
+  #       - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCSecurityGroupId"
+  #     subnetIds:
+  #       - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetA"
+  #       - Fn::ImportValue: "tf-${self:custom.service}-${self:custom.stage}-VPCPrivateSubnetB"
 
   #############################################################################
   # OPTION(canary): Canary-deployed Lambda using serverless-plugin-canary-deployments
@@ -121,17 +121,17 @@ functions:
   # To view canary progress for other stages, find them in CodeDeploy Applications:
   # https://us-east-1.console.aws.amazon.com/codesuite/codedeploy/applications?region=us-east-1
   #############################################################################
-  canary:
-    handler: src/server/base.handler
-    events: # Use a generic proxy to allow Express app to route.
-      - http: ANY /canary
-      - http: 'ANY /canary/{proxy+}'
-    environment:
-      BASE_URL: /canary
-    deploymentSettings:
-      # See all options here: https://github.com/davidgf/serverless-plugin-canary-deployments#configuration
-      type: AllAtOnce
-      alias: Live
+  # canary:
+  #   handler: src/server/base.handler
+  #   events: # Use a generic proxy to allow Express app to route.
+  #     - http: ANY /canary
+  #     - http: 'ANY /canary/{proxy+}'
+  #   environment:
+  #     BASE_URL: /canary
+  #   deploymentSettings:
+  #     # See all options here: https://github.com/davidgf/serverless-plugin-canary-deployments#configuration
+  #     type: AllAtOnce
+  #     alias: Live
 
   #############################################################################
   # OPTION(layers): Conditional import can use code from a layer.
@@ -154,45 +154,45 @@ functions:
   #                                    |___/
   # ```
   #############################################################################
-  layers:
-    handler: src/server/layers.handler
-    events:
-      - http: ANY /layers
-      - http: 'ANY /layers/{proxy+}'
-    environment:
-      BASE_URL: /layers
-    layers:
-      - { Ref: VendorLambdaLayer }
-      - { Ref: RepeatLambdaLayer }
+  # layers:
+  #   handler: src/server/layers.handler
+  #   events:
+  #     - http: ANY /layers
+  #     - http: 'ANY /layers/{proxy+}'
+  #   environment:
+  #     BASE_URL: /layers
+  #   layers:
+  #     - { Ref: VendorLambdaLayer }
+  #     - { Ref: RepeatLambdaLayer }
 
 ###############################################################################
 # OPTION(layers): Add some layers.
 ###############################################################################
-layers:
-  # Dependencies: Adds common vendor libs to a `node_modules` directory.
-  # Note: Expands to `/opt/nodejs/node_modules/**/*.js`, so should only do this once.
-  vendor:
-    path: layers/vendor
-    name: sls-${self:custom.service}-${self:custom.stage}-vendor
-    jetpack:
-      roots:
-        - layers/vendor/nodejs
+# layers:
+#   # Dependencies: Adds common vendor libs to a `node_modules` directory.
+#   # Note: Expands to `/opt/nodejs/node_modules/**/*.js`, so should only do this once.
+#   vendor:
+#     path: layers/vendor
+#     name: sls-${self:custom.service}-${self:custom.stage}-vendor
+#     jetpack:
+#       roots:
+#         - layers/vendor/nodejs
 
-  # No dependencies: A vanilla JS function.
-  # Note: Expands to `/opt/repeat/*.js` (we have `layers/repeat/repeat` here).
-  repeat:
-    path: layers/repeat
-    name: sls-${self:custom.service}-${self:custom.stage}-repeat
-    package:
-      include:
-        - "*.js"
+#   # No dependencies: A vanilla JS function.
+#   # Note: Expands to `/opt/repeat/*.js` (we have `layers/repeat/repeat` here).
+#   repeat:
+#     path: layers/repeat
+#     name: sls-${self:custom.service}-${self:custom.stage}-repeat
+#     package:
+#       include:
+#         - "*.js"
 
-resources:
-  Resources:
-    ###########################################################################
-    # OPTION(Xray): Enable Xray tracing.
-    ###########################################################################
-    XrayLambdaFunction:
-      Properties:
-        TracingConfig:
-          Mode: Active
+# resources:
+#   Resources:
+#     ###########################################################################
+#     # OPTION(Xray): Enable Xray tracing.
+#     ###########################################################################
+#     XrayLambdaFunction:
+#       Properties:
+#         TracingConfig:
+#           Mode: Active

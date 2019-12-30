@@ -76,24 +76,24 @@ module "serverless" {
 ###############################################################################
 # OPTION(xray): Add X-ray support to lambda execution roles.
 ###############################################################################
-module "serverless_xray" {
-  source  = "FormidableLabs/serverless/aws//modules/xray"
-  version = "0.8.8"
+# module "serverless_xray" {
+#   source  = "FormidableLabs/serverless/aws//modules/xray"
+#   version = "0.8.8"
 
-  # Same variables as for `serverless` module.
-  region       = "${var.region}"
-  service_name = "${var.service_name}"
-  stage        = "${var.stage}"
+#   # Same variables as for `serverless` module.
+#   region       = "${var.region}"
+#   service_name = "${var.service_name}"
+#   stage        = "${var.stage}"
 
-  # OPTION(custom_role): override the Lambda execution role that
-  # terraform-aws-serverless creates by default.
-  # lambda_role_name = "${aws_iam_role.lambda_execution_custom.name}"
-}
+#   # OPTION(custom_role): override the Lambda execution role that
+#   # terraform-aws-serverless creates by default.
+#   # lambda_role_name = "${aws_iam_role.lambda_execution_custom.name}"
+# }
 
 ###############################################################################
 # OPTION(vpc): Create VPC resources and expose to Serverless stack.
 ###############################################################################
-data "aws_availability_zones" "available" {}
+# data "aws_availability_zones" "available" {}
 
 # OPTION(vpc): Instantiate an actual VPC
 #
@@ -122,49 +122,49 @@ data "aws_availability_zones" "available" {}
 # <Public Spare> D        10.1.112.0/20
 #
 # VPC CIDR Block          10.1.0.0/17     10.1.0.0    10.1.127.255  32768
-module "vpc" "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "1.66.0"
+# module "vpc" "vpc" {
+#   source  = "terraform-aws-modules/vpc/aws"
+#   version = "1.66.0"
 
-  name = "tf-${var.service_name}-${var.stage}"
+#   name = "tf-${var.service_name}-${var.stage}"
 
-  # Dynamically get 2 availabile AZs for failover.
-  azs = [
-    "${data.aws_availability_zones.available.names[0]}",
-    "${data.aws_availability_zones.available.names[1]}",
-  ]
+#   # Dynamically get 2 availabile AZs for failover.
+#   azs = [
+#     "${data.aws_availability_zones.available.names[0]}",
+#     "${data.aws_availability_zones.available.names[1]}",
+#   ]
 
-  # Features
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  enable_nat_gateway   = true
+#   # Features
+#   enable_dns_hostnames = true
+#   enable_dns_support   = true
+#   enable_nat_gateway   = true
 
-  # Networking
-  cidr            = "10.1.0.0/17"
-  private_subnets = ["10.1.0.0/20", "10.1.16.0/20"]
-  public_subnets  = ["10.1.64.0/20", "10.1.80.0/20"]
+#   # Networking
+#   cidr            = "10.1.0.0/17"
+#   private_subnets = ["10.1.0.0/20", "10.1.16.0/20"]
+#   public_subnets  = ["10.1.64.0/20", "10.1.80.0/20"]
 
-  tags = "${local.tags}"
-}
+#   tags = "${local.tags}"
+# }
 
 # OPTION(vpc): Use a custom, honed SG.
-resource "aws_security_group" "vpc" {
-  name        = "tf-${var.service_name}-${var.stage}"
-  description = "Allow Serverless Lambda networking"
-  vpc_id      = "${module.vpc.vpc_id}"
+# resource "aws_security_group" "vpc" {
+#   name        = "tf-${var.service_name}-${var.stage}"
+#   description = "Allow Serverless Lambda networking"
+#   vpc_id      = "${module.vpc.vpc_id}"
 
-  egress {
-    description = "Egress: tf-${var.service_name}-${var.stage}"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   egress {
+#     description = "Egress: tf-${var.service_name}-${var.stage}"
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  tags = "${merge(local.tags, map(
-    "Name", "tf-${var.service_name}-${var.stage}",
-  ))}"
-}
+#   tags = "${merge(local.tags, map(
+#     "Name", "tf-${var.service_name}-${var.stage}",
+#   ))}"
+# }
 
 # OPTION(vpc): Use a small CloudFormation stack to expose outputs for
 # consumption in Serverless. (There are _many_ ways to do this, we just
@@ -174,79 +174,79 @@ resource "aws_security_group" "vpc" {
 # VPC SG because it's small and we need "something". It's otherwise unused.
 #
 # See: https://theburningmonk.com/2019/03/making-terraform-and-serverless-framework-work-together/
-resource "aws_cloudformation_stack" "outputs_vpc" {
-  name = "tf-${var.service_name}-${var.stage}-outputs-vpc"
+# resource "aws_cloudformation_stack" "outputs_vpc" {
+#   name = "tf-${var.service_name}-${var.stage}-outputs-vpc"
 
-  template_body = <<STACK
-Resources:
-  VPCSecurityGroupId:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
-      Value: "${aws_security_group.vpc.id}"
-      Type: String
+#   template_body = <<STACK
+# Resources:
+#   VPCSecurityGroupId:
+#     Type: AWS::SSM::Parameter
+#     Properties:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
+#       Value: "${aws_security_group.vpc.id}"
+#       Type: String
 
-Outputs:
-  VPCSecurityGroupId:
-    Description: "VPC SG GID"
-    Value: "${aws_security_group.vpc.id}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
+# Outputs:
+#   VPCSecurityGroupId:
+#     Description: "VPC SG GID"
+#     Value: "${aws_security_group.vpc.id}"
+#     Export:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCSecurityGroupId"
 
-  VPCPrivateSubnetA:
-    Description: "VPC Private Subnet A"
-    Value: "${module.vpc.private_subnets[0]}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetA"
+#   VPCPrivateSubnetA:
+#     Description: "VPC Private Subnet A"
+#     Value: "${module.vpc.private_subnets[0]}"
+#     Export:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetA"
 
-  VPCPrivateSubnetB:
-    Description: "VPC Private Subnet B"
-    Value: "${module.vpc.private_subnets[1]}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetB"
+#   VPCPrivateSubnetB:
+#     Description: "VPC Private Subnet B"
+#     Value: "${module.vpc.private_subnets[1]}"
+#     Export:
+#       Name: "tf-${var.service_name}-${var.stage}-VPCPrivateSubnetB"
 
-STACK
+# STACK
 
-  tags = "${local.tags}"
-}
+#   tags = "${local.tags}"
+# }
 
 # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
-module "serverless_vpc" {
-  source  = "FormidableLabs/serverless/aws//modules/vpc"
-  version = "0.8.8"
+# module "serverless_vpc" {
+#   source  = "FormidableLabs/serverless/aws//modules/vpc"
+#   version = "0.8.8"
 
-  # Same variables as for `serverless` module.
-  region       = "${var.region}"
-  service_name = "${var.service_name}"
-  stage        = "${var.stage}"
+#   # Same variables as for `serverless` module.
+#   region       = "${var.region}"
+#   service_name = "${var.service_name}"
+#   stage        = "${var.stage}"
 
-  # OPTION(custom_role): override the Lambda execution role that
-  # terraform-aws-serverless creates by default.
-  # lambda_role_name = "${aws_iam_role.lambda_execution_custom.name}"
-}
+#   # OPTION(custom_role): override the Lambda execution role that
+#   # terraform-aws-serverless creates by default.
+#   # lambda_role_name = "${aws_iam_role.lambda_execution_custom.name}"
+# }
 
 ###############################################################################
 # OPTION(custom_roles): Create and use a custom Lambda role in Serverless.
 ###############################################################################
-data "aws_partition" "current" {}
+# data "aws_partition" "current" {}
 
-resource "aws_iam_role" "lambda_execution_custom" {
-  name               = "tf-${var.service_name}-${var.stage}-lambda-execution-custom"
-  assume_role_policy = "${data.aws_iam_policy_document.lambda_execution_custom_assume.json}"
-  tags               = "${local.tags}"
-}
+# resource "aws_iam_role" "lambda_execution_custom" {
+#   name               = "tf-${var.service_name}-${var.stage}-lambda-execution-custom"
+#   assume_role_policy = "${data.aws_iam_policy_document.lambda_execution_custom_assume.json}"
+#   tags               = "${local.tags}"
+# }
 
 # OPTION(custom_roles): Allow Lambda to assume the custom role.
-data "aws_iam_policy_document" "lambda_execution_custom_assume" {
-  statement {
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
+# data "aws_iam_policy_document" "lambda_execution_custom_assume" {
+#   statement {
+#     principals {
+#       type        = "Service"
+#       identifiers = ["lambda.amazonaws.com"]
+#     }
 
-    actions = ["sts:AssumeRole"]
-  }
-}
+#     actions = ["sts:AssumeRole"]
+#   }
+# }
 
 # OPTION(custom_roles): Use a small CloudFormation stack to expose outputs for
 # consumption in Serverless. (There are _many_ ways to do this, we just
@@ -256,37 +256,37 @@ data "aws_iam_policy_document" "lambda_execution_custom_assume" {
 # role ARN because it's small and we need "something". It's otherwise unused.
 #
 # See: https://theburningmonk.com/2019/03/making-terraform-and-serverless-framework-work-together/
-resource "aws_cloudformation_stack" "outputs_custom_role" {
-  name = "tf-${var.service_name}-${var.stage}-outputs-custom-role"
+# resource "aws_cloudformation_stack" "outputs_custom_role" {
+#   name = "tf-${var.service_name}-${var.stage}-outputs-custom-role"
 
-  template_body = <<STACK
-Resources:
-  LambdaExecutionRoleArn:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleCustomArn"
-      Value: "${aws_iam_role.lambda_execution_custom.arn}"
-      Type: String
+#   template_body = <<STACK
+# Resources:
+#   LambdaExecutionRoleArn:
+#     Type: AWS::SSM::Parameter
+#     Properties:
+#       Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleCustomArn"
+#       Value: "${aws_iam_role.lambda_execution_custom.arn}"
+#       Type: String
 
-Outputs:
-  LambdaExecutionRoleArn:
-    Description: "The ARN of the lambda execution role for Serverless to apply"
-    Value: "${aws_iam_role.lambda_execution_custom.arn}"
-    Export:
-      Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleCustomArn"
+# Outputs:
+#   LambdaExecutionRoleArn:
+#     Description: "The ARN of the lambda execution role for Serverless to apply"
+#     Value: "${aws_iam_role.lambda_execution_custom.arn}"
+#     Export:
+#       Name: "tf-${var.service_name}-${var.stage}-LambdaExecutionRoleCustomArn"
 
-STACK
+# STACK
 
-  tags = "${local.tags}"
-}
+#   tags = "${local.tags}"
+# }
 
-# OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
-module "serverless_canary" {
-  source  = "FormidableLabs/serverless/aws//modules/canary"
-  version = "0.8.8"
+# # OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
+# module "serverless_canary" {
+#   source  = "FormidableLabs/serverless/aws//modules/canary"
+#   version = "0.8.8"
 
-  # Same variables as for `serverless` module.
-  region       = "${var.region}"
-  service_name = "${var.service_name}"
-  stage        = "${var.stage}"
-}
+#   # Same variables as for `serverless` module.
+#   region       = "${var.region}"
+#   service_name = "${var.service_name}"
+#   stage        = "${var.stage}"
+# }
