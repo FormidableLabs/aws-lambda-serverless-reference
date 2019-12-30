@@ -13,8 +13,9 @@ variable "service_name" {
 }
 
 locals {
-  tags = "${map(
-    "Service", "${var.service_name}",
-    "Stage", "${var.stage}",
-  )}"
+  tags = {
+    "Service" = var.service_name
+    "Stage"   = var.stage
+  }
 }
+
