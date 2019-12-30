@@ -94,7 +94,9 @@ Your superadmin user should be reserved only for work on _new_ environments. If 
       yarn lambda:deploy
     ```
 
-    ... then go and kick the tires on a URL!
+    ... then go and kick the tires on a URL! 
+    
+    The endpoints created will be listed under `endpoints` in the console output.  Please note that the endpoints MUST end with `/`.  If the output is `https://ii178wi5hi.execute-api.us-east-1.amazonaws.com/sandbox/base`, then you must use `https://ii178wi5hi.execute-api.us-east-1.amazonaws.com/sandbox/base/` (notice the trailing `/`) in your browser.
 
 1. Delete the serverless application and re-deploy it as-is off `master` branch:
 
