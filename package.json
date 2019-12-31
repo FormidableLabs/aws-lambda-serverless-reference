@@ -6,9 +6,8 @@
   "author": "Ryan Roemer <ryan.roemer@formidable.com>",
   "license": "MIT",
   "engines": {    
-    "node": "~12.14.0"  
+    "node": ">=10"
   },
-  "engine-strict": true,
   "scripts": {
     "postinstall": "cd layers/vendor/nodejs && yarn",
     "_dev:on": "sed -i '' 's/FormidableLabs\\/serverless\\/aws/\\.\\.\\/\\.\\.\\/terraform-aws-serverless/g' terraform/main.tf",
