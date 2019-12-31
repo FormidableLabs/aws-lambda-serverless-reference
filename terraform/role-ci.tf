@@ -1,3 +1,8 @@
+############################################################################
+# OPTION(custom_roles): Create and use a custom Lambda role in Serverless. #
+# This entire file can be commented out if you do not need a custom role.  #
+############################################################################
+
 # Example of how to use policies from terraform-aws-serverless to create
 # a developer/CI role that any user in the developer group can assume.
 #
@@ -76,11 +81,13 @@ resource "aws_iam_role_policy_attachment" "ci_cd_lambdas" {
   policy_arn = "${module.serverless.iam_policy_cd_lambdas_arn}"
 }
 
+# OPTION(vpc)
 resource "aws_iam_role_policy_attachment" "ci_vpc" {
   role       = "${aws_iam_role.ci.name}"
   policy_arn = "${module.serverless_vpc.iam_policy_ci_arn}"
 }
 
+# OPTION(canary)
 resource "aws_iam_role_policy_attachment" "ci_canary" {
   role       = "${aws_iam_role.ci.name}"
   policy_arn = "${module.serverless_canary.iam_policy_ci_arn}"
