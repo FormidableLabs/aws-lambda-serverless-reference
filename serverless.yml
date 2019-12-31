@@ -47,7 +47,7 @@ provider:
     # Fn::ImportValue: tf-${self:custom.service}-${self:custom.stage}-LambdaExecutionRoleCustomArn
 
   # Lambda configuration
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   timeout: 30 # seconds (`300` max)
   memorySize: 128 # MB value (`1024` default)
 
