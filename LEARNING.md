@@ -166,7 +166,7 @@ Once you've got the basics of serverless deployment down, you can move on to doi
 
 1. Create a new environment named `sandbox-FIRST-LAST`, just for you!
     1. Create a new temporary branch off the repo (not a fork) so that other Formidables can easily jump in and help you.
-        2. Per the instructions above, make sure to talk to Tyler or Roemer and comment out / disable all `OPTION` sections in `serverless.yml` and `terraform/main.tf` as well as everything in `role-ci.tf` in your branch and have them review and approve the tentative changes before trying any real AWS provisioning actions.
+    2. Per the instructions above, make sure to talk to Tyler or Roemer and comment out / disable all `OPTION` sections in `serverless.yml`, `terraform/main.tf` and `terraform/role-ci.tf` in your branch and have them review and approve the tentative changes before trying any real AWS provisioning actions.
     3. Once everything is ready, go ahead and provision your entire infrastructure and then application!
 
         ```sh
