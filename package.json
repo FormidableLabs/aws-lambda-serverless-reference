@@ -5,9 +5,6 @@
   "repository": "https://github.com/FormidableLabs/aws-lambda-serverless-reference",
   "author": "Ryan Roemer <ryan.roemer@formidable.com>",
   "license": "MIT",
-  "engines": {    
-    "node": ">=10"
-  },
   "scripts": {
     "postinstall": "cd layers/vendor/nodejs && yarn",
     "_dev:on": "sed -i '' 's/FormidableLabs\\/serverless\\/aws/\\.\\.\\/\\.\\.\\/terraform-aws-serverless/g' terraform/main.tf",
