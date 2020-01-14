@@ -59,7 +59,7 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-promise": "^4.0.1",
     "nodemon": "^1.18.9",
-    "serverless": "^1.59.2",
+    "serverless": "^1.61.1",
     "serverless-jetpack": "^0.7.0",
     "serverless-offline": "^5.12.1",
     "serverless-plugin-canary-deployments": "^0.4.8"
