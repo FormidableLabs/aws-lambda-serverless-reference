@@ -96,6 +96,8 @@ Your superadmin user should be reserved only for work on _new_ environments. If 
 
     ... then go and kick the tires on a URL!
 
+    The endpoints created will be listed under `endpoints` in the console output.  Please note that the endpoints MUST end with `/`.  If the output is `https://ii178wi5hi.execute-api.us-east-1.amazonaws.com/sandbox/base`, then you must use `https://ii178wi5hi.execute-api.us-east-1.amazonaws.com/sandbox/base/` (notice the trailing `/`) in your browser.
+
 1. Delete the serverless application and re-deploy it as-is off `master` branch:
 
     ```sh
@@ -164,8 +166,8 @@ Once you've got the basics of serverless deployment down, you can move on to doi
 
 1. Create a new environment named `sandbox-FIRST-LAST`, just for you!
     1. Create a new temporary branch off the repo (not a fork) so that other Formidables can easily jump in and help you.
-    2. Per the instructions above, make sure to talk to Tyler or Roemer and comment out / disable all `OPTION` sections in `serverless.yml` and `terraform/main.tf` in your branch and have them review and approve the tentative changes before trying any real AWS provisioning actions.
-    3. Once everything is ready, go ahead and provision your entire infrastructure and then application!
+    2. Per the instructions above, make sure to talk to Tyler or Roemer and comment out / disable all `OPTION` sections in `serverless.yml`, `terraform/main.tf` and `terraform/role-ci.tf` in your branch and have them review and approve the tentative changes before trying any real AWS provisioning actions.
+    3. Once everything is ready, go ahead and provision your entire infrastructure!
 
         ```sh
         # Create the CloudFormation bootstrap stack
@@ -184,13 +186,21 @@ Once you've got the basics of serverless deployment down, you can move on to doi
           yarn tf:service:apply
         # Type "yes" at prompt for resource creation after a review
 
+    4. Using the AWS console, add your `FIRST.LAST-admin` user to the newly created IAM Group `tf-simple-reference-sandbox-FIRST-LAST-admin`.
+
+    5. And then deploy the application with the -admin user!
+
+        ```sh
         # Deploy the serverless app as `-admin`
         $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST-admin --no-session -- \
           yarn lambda:deploy
         ```
 
-    4. Go kick the tires on your new service or get help in Slack if things are going wrong. Experiment with the app or the Terraform infastructure with suggestions from your colleagues.
-    5. When you're finished, tear everything down in reverse order:
+    6. Go kick the tires on your new service or get help in Slack if things are going wrong. Experiment with the app or the Terraform infastructure with suggestions from your colleagues.
+
+    7. When you're finished, remove your `FIRST.LAST-admin` user from the IAM group listed in step 4 via the AWS Console.
+
+    8. Then, tear everything down in reverse order:
 
 
         ```sh

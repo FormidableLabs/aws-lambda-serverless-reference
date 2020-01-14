@@ -283,10 +283,19 @@ We have several options for developing a service locally, with different advanta
 
 ### Node.js
 
-Run the server straight up in your terminal with Node.js via `nodemon` for instant restarts on changes:
+Run the server straight up in your terminal with Node.js via `nodemon` for instant restarts on changes. Note that because we effectively run the same server at different URL bases you must separately specify them.
 
 ```sh
+# Base server
 $ yarn node:localdev
+
+# Different scenarios that reuse base.js
+$ BASE_URL=/canary yarn node:localdev
+$ BASE_URL=/vpc yarn node:localdev
+$ BASE_URL=/layers yarn node:localdev
+
+# Other scenarios that use a different js file.
+$ SCENARIO=xray yarn node:localdev
 ```
 
 See it in action!:
@@ -302,7 +311,7 @@ $ curl -X POST "http://127.0.0.1:3000/base/hello.json" \
 
 ### Lambda Offline
 
-Run the server in a Lambda simulation via the [`serverless-offline`](https://github.com/dherault/serverless-offline) plugin
+Run the server in a Lambda simulation via the [`serverless-offline`](https://github.com/dherault/serverless-offline) plugin. In contrast to `node:localdev` above, _all_ routes and functions are loaded together.
 
 ```sh
 $ yarn lambda:localdev

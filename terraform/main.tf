@@ -41,7 +41,7 @@ JSON
 # Base `serverless` IAM support
 ###############################################################################
 module "serverless" {
-  source  = "../../terraform-aws-serverless"
+  source = "../../terraform-aws-serverless"
   # version = "0.8.8"
 
   region       = var.region
@@ -77,7 +77,7 @@ module "serverless" {
 # OPTION(xray): Add X-ray support to lambda execution roles.
 ###############################################################################
 module "serverless_xray" {
-  source  = "../../terraform-aws-serverless//modules/xray"
+  source = "../../terraform-aws-serverless//modules/xray"
   # version = "0.8.8"
 
   # Same variables as for `serverless` module.
@@ -216,7 +216,7 @@ STACK
 
 # OPTION(vpc): Add in IAM permissions to humans + lambda execution role.
 module "serverless_vpc" {
-  source  = "../../terraform-aws-serverless//modules/vpc"
+  source = "../../terraform-aws-serverless//modules/vpc"
   # version = "0.8.8"
 
   # Same variables as for `serverless` module.
@@ -287,7 +287,7 @@ STACK
 
 # OPTION(canary): Add serverless-plugin-canary-deployments to lambda execution roles.
 module "serverless_canary" {
-  source  = "../../terraform-aws-serverless//modules/canary"
+  source = "../../terraform-aws-serverless//modules/canary"
   # version = "0.8.8"
 
   # Same variables as for `serverless` module.
