@@ -35,6 +35,7 @@ A simple "hello world" reference app for the [`FormidableLabs/serverless/aws`][F
 - [Serverless Deployment (IAM Roles)](#serverless-deployment-iam-roles)
   - [Admin Deployment](#admin-deployment)
   - [User Deployment](#user-deployment)
+- [`terraform-aws-serverless` Development](#terraform-aws-serverless-development)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -540,6 +541,36 @@ Then choose a datestamp and add with the `-t` flag like:
 ```sh
 $ STAGE=sandbox yarn run lambda:rollback -t 2019-02-07T00:35:56.362Z
 ```
+
+## `terraform-aws-serverless` Development
+
+_For contributors to [FormidableLabs/serverless/aws][]_
+
+To test out a local branch of `terraform-aws-serverless`, first clone it to the relative path of `../terraform-aws-serverless` from this project's checkout. Then run the command:
+
+```sh
+$ yarn _dev:on
+```
+
+To switch to the local modules instead of published ones. Next, make sure to re-initialize Terraform to pick up the local modules:
+
+```sh
+$ STAGE=sandbox yarn run tf:service:init --reconfigure
+```
+
+Then, do all your testing of the local module. When you're ready to unwind the changes, you can do:
+
+```sh
+$ yarn _dev:off
+```
+
+To switch back to the published version. Typically then you'll do a version bump if we've published a new module. Then again re-initialize:
+
+```sh
+$ STAGE=sandbox yarn run tf:service:init --reconfigure
+```
+
+...and you're up and running the published module again!
 
 [serverless]: https://serverless.com/
 [serverless-http]: https://github.com/dougmoscrop/serverless-http
