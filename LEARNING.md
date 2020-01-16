@@ -94,8 +94,8 @@ Your superadmin user should be reserved only for work on _new_ environments. If 
       yarn lambda:deploy
     ```
 
-    ... then go and kick the tires on a URL! 
-    
+    ... then go and kick the tires on a URL!
+
     The endpoints created will be listed under `endpoints` in the console output.  Please note that the endpoints MUST end with `/`.  If the output is `https://ii178wi5hi.execute-api.us-east-1.amazonaws.com/sandbox/base`, then you must use `https://ii178wi5hi.execute-api.us-east-1.amazonaws.com/sandbox/base/` (notice the trailing `/`) in your browser.
 
 1. Delete the serverless application and re-deploy it as-is off `master` branch:
@@ -199,7 +199,7 @@ Once you've got the basics of serverless deployment down, you can move on to doi
     6. Go kick the tires on your new service or get help in Slack if things are going wrong. Experiment with the app or the Terraform infastructure with suggestions from your colleagues.
 
     7. When you're finished, remove your `FIRST.LAST-admin` user from the IAM group listed in step 4 via the AWS Console.
-    
+
     8. Then, tear everything down in reverse order:
 
 
