@@ -3919,9 +3919,9 @@ make-dir@^1.0.0, make-dir@^1.2.0:
     pify "^3.0.0"
 
 make-dir@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.0.0.tgz#1b5f39f6b9270ed33f9f054c5c0f84304989f801"
-  integrity sha512-grNJDhb8b1Jm1qeqW5R/O63wUo4UXo2v2HMic6YT9i/HBlF93S8jkMgH7yugvY9ABDShH4VZMn8I+U8+fCNegw==
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.0.2.tgz#04a1acbf22221e1d6ef43559f43e05a90dbb4392"
+  integrity sha512-rYKABKutXa6vXTXhoV18cBE7PaewPXHe/Bdq4v+ZLMhxbWApkFFplT0LcbMW+6BbjnQXzZ/sAvSE/JdguApG5w==
   dependencies:
     semver "^6.0.0"
 
@@ -4814,10 +4814,19 @@ readable-stream@^2.0.0, readable-stream@^2.0.2, readable-stream@^2.0.5, readable
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^3.0.0, readable-stream@^3.0.1, readable-stream@^3.1.1, readable-stream@^3.4.0:
+readable-stream@^3.0.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.4.0.tgz#a51c26754658e0a3c21dbf59163bd45ba6f447fc"
   integrity sha512-jItXPLmrSR8jmTRmRWJXCnGJsfy85mB3Wd/uINMXA65yrnFo0cPClFIUWzo2najVNSl+mx7/4W8ttlLWJe99pQ==
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
+
+readable-stream@^3.0.1, readable-stream@^3.1.1, readable-stream@^3.4.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198"
+  integrity sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==
   dependencies:
     inherits "^2.0.3"
     string_decoder "^1.1.1"
@@ -5118,7 +5127,7 @@ serverless-http@^2.3.0:
 
 serverless-jetpack@FormidableLabs/serverless-jetpack#feature/trace-deps:
   version "0.9.0"
-  resolved "https://codeload.github.com/FormidableLabs/serverless-jetpack/tar.gz/7ea3fb2c4d4b2b400fbdacba7b07e470fe49b735"
+  resolved "https://codeload.github.com/FormidableLabs/serverless-jetpack/tar.gz/07023b0fddc11e59f94e83dfbdafdb75487f44e3"
   dependencies:
     archiver "^3.1.1"
     globby "^9.2.0"
@@ -5127,7 +5136,7 @@ serverless-jetpack@FormidableLabs/serverless-jetpack#feature/trace-deps:
     make-dir "^3.0.0"
     nanomatch "^1.2.13"
     p-limit "^2.2.2"
-    trace-deps "^0.1.0"
+    trace-deps "^0.2.0"
 
 serverless-offline@^5.12.1:
   version "5.12.1"
@@ -5758,10 +5767,10 @@ touch@^3.1.0:
   dependencies:
     nopt "~1.0.10"
 
-trace-deps@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/trace-deps/-/trace-deps-0.1.0.tgz#2084958d06e97805a81ce7fc1d6a2c79c200606c"
-  integrity sha512-4iVBcuyPehXteYtQfUzBjBuycWosj07VZOjDxm0OAtlHqz8T8t/BELyzAnB04J2cdEfd2MRFqGjfjSCWVX14pA==
+trace-deps@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/trace-deps/-/trace-deps-0.2.0.tgz#18d3ea1c4c084f214d783ced13de92efda394f6f"
+  integrity sha512-xAFJN6xqjYZFMLqjwosXQnyOTFSuA7g7aysUTPPLxGUl2jE0N5DvcSrjJABXyrCEyo3tP8o26J4Ejr1B1e0RDg==
   dependencies:
     acorn-node "^1.8.2"
     resolve "^1.15.1"
