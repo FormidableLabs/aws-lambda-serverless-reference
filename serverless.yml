@@ -8,10 +8,10 @@ custom:
   jetpack:
     preInclude:
       - "!**" # Start with no files at all.
-    trace: false
-      # # Use trace mode for speed and ignore aws-sdk + all deps
-      # ignores:
-      #   - "aws-sdk"
+    trace:
+      # Use trace mode for speed and ignore aws-sdk + all deps
+      ignores:
+        - "aws-sdk"
 
 plugins:
   - serverless-jetpack
@@ -154,10 +154,10 @@ functions:
     package:
       individually: true
     jetpack:
-      trace: false
-        # ignores:      # Add ignores for things provided by layers.
-        #   - "figlet"  # From VendorLambdaLayer
-        #   - "/opt"    # From RepeatLambdaLayer
+      trace:
+        ignores:      # Add ignores for things provided by layers.
+          - "figlet"  # From VendorLambdaLayer
+          - "/opt"    # From RepeatLambdaLayer
 
 ###############################################################################
 # OPTION(layers): Add some layers.
