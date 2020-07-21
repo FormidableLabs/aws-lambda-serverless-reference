@@ -20,9 +20,10 @@ This project's primary audience is experienced cloud infrastructure folks lookin
 
 ## Projects
 
-We have **two** main reference projects from which to learn:
+We have **three** main reference projects from which to learn:
 
-* [aws-lambda-serverless-reference](https://github.com/FormidableLabs/aws-lambda-serverless-reference): (**This project!**) Our most basic Serverless reference with a full production infrastructure. If you're unsure of where to begin, start here.
+* [aws-lambda-serverless-reference](https://github.com/FormidableLabs/aws-lambda-serverless-reference): (**This project!**) Our most basic Serverless reference with a full production infrastructure.
+* [aws-lambda-dogs](https://github.com/FormidableLabs/aws-lambda-dogs): A simple REST API Serverless reference using [json-server](https://github.com/typicode/json-server). If you don't need VPC or are unsure of where to begin, start here.
 * [badges](https://github.com/FormidableLabs/badges): Our advanced reference project that includes more complex enhancements like: per-PR environments, github-flow support, promote-to-production artifacts, etc. Once you've mastered manual CF + TF + SLS deploys, come over here and see how far automation can take us!
 
 ## Getting Started
