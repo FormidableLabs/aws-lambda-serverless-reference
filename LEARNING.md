@@ -20,9 +20,10 @@ This project's primary audience is experienced cloud infrastructure folks lookin
 
 ## Projects
 
-We have **two** main reference projects from which to learn:
+We have **three** main reference projects from which to learn:
 
-* [aws-lambda-serverless-reference](https://github.com/FormidableLabs/aws-lambda-serverless-reference): (**This project!**) Our most basic Serverless reference with a full production infrastructure. If you're unsure of where to begin, start here.
+* [aws-lambda-serverless-reference](https://github.com/FormidableLabs/aws-lambda-serverless-reference): (**This project!**) Our most basic Serverless reference with a full production infrastructure.
+* [aws-lambda-dogs](https://github.com/FormidableLabs/aws-lambda-dogs): A simple REST API Serverless reference using [json-server](https://github.com/typicode/json-server). If you don't need VPC or are unsure of where to begin, start here.
 * [badges](https://github.com/FormidableLabs/badges): Our advanced reference project that includes more complex enhancements like: per-PR environments, github-flow support, promote-to-production artifacts, etc. Once you've mastered manual CF + TF + SLS deploys, come over here and see how far automation can take us!
 
 ## Getting Started
@@ -121,103 +122,5 @@ Your superadmin user should be reserved only for work on _new_ environments. If 
 
 ### Infrastructure Exercises
 
-Once you've got the basics of serverless deployment down, you can move on to doing things with your AWS superadmin user to the infrastructure.
+Once you've got the basics of serverless deployment down, you can head over to [aws-lambda-dogs Infrastructure Exercises](https://github.com/FormidableLabs/aws-lambda-dogs/blob/master/LEARNING.md#infrastructure-exercises) to do things with your AWS superadmin user to the infrastructure (without having to deal with a VPC).
 
-1. Check the status of the CloudFormation bootstrap stack and attempt an update:
-
-    ```sh
-    # Check the existing status.
-    $ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- \
-      yarn cf:bootstrap:status
-    ...
-    "UPDATE_COMPLETE"
-
-    # Attempt an update. If everything is up-to-date on master, you'll get an expected error.
-    $ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- \
-      yarn cf:bootstrap:update
-    ...
-    An error occurred (ValidationError) when calling the UpdateStack operation: No updates are to be performed.
-    ```
-
-1. Check the status of the Terraform service stack and attempt an update:
-
-    ```sh
-    # Init to appropriate stage backend.
-    $ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- \
-      yarn tf:service:init --reconfigure
-    ...
-    Terraform has been successfully initialized!
-
-    # Run plan to see any changes from our code vs. actual infrastructure.
-    $ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- \
-      yarn tf:service:plan
-    ...
-    No changes. Infrastructure is up-to-date.
-
-
-    # Run apply to make changes (or no-op) from our code vs. actual infrastructure.
-    $ STAGE=sandbox aws-vault exec FIRST.LAST --no-session -- \
-      yarn tf:service:apply
-    ...
-    Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
-
-    # **NOTE**: If there are changes needed, you will type "yes" at the prompt.
-    ```
-
-1. Create a new environment named `sandbox-FIRST-LAST`, just for you!
-    1. Create a new temporary branch off the repo (not a fork) so that other Formidables can easily jump in and help you.
-    2. Per the instructions above, make sure to talk to Tyler or Roemer and comment out / disable all `OPTION` sections in `serverless.yml`, `terraform/main.tf` and `terraform/role-ci.tf` in your branch and have them review and approve the tentative changes before trying any real AWS provisioning actions.
-    3. Once everything is ready, go ahead and provision your entire infrastructure!
-
-        ```sh
-        # Create the CloudFormation bootstrap stack
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST --no-session -- \
-          yarn cf:bootstrap:create
-
-        # Confirm done in `CREATE|UPDATE_COMPLETE` status.
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST --no-session -- \
-          yarn cf:bootstrap:status
-
-        # Create the Terraform service stack
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST --no-session -- \
-          yarn tf:service:init --reconfigure
-
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST --no-session -- \
-          yarn tf:service:apply
-        # Type "yes" at prompt for resource creation after a review
-
-    4. Using the AWS console, add your `FIRST.LAST-admin` user to the newly created IAM Group `tf-simple-reference-sandbox-FIRST-LAST-admin`.
-
-    5. And then deploy the application with the -admin user!
-
-        ```sh
-        # Deploy the serverless app as `-admin`
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST-admin --no-session -- \
-          yarn lambda:deploy
-        ```
-
-    6. Go kick the tires on your new service or get help in Slack if things are going wrong. Experiment with the app or the Terraform infastructure with suggestions from your colleagues.
-
-    7. When you're finished, remove your `FIRST.LAST-admin` user from the IAM group listed in step 4 via the AWS Console.
-
-    8. Then, tear everything down in reverse order:
-
-
-        ```sh
-        # Delete the serverless app as `-admin`
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST-admin --no-session -- \
-          yarn lambda:_delete
-
-        # Delete Terraform support stack
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST --no-session -- \
-          yarn tf:service:_delete
-        # Type "yes" if prompted
-
-        # Delete the CloudFormation bootstrap stack
-        $ STAGE=sandbox-FIRST-LAST aws-vault exec FIRST.LAST --no-session -- \
-          yarn cf:bootstrap:_delete
-        ```
-
-1. See if there are any [open issues](https://github.com/FormidableLabs/aws-lambda-serverless-reference/issues) that need an infrastructure code fix. Talk to your peers in Slack channel as to how best to develop the changes (a separate dedicated environment, or just YOLO-ing it in `sandbox`), then try to open a pull request!
-
-1. Once you're comfortable with all the infrastructure parts in this project, head on over to our [badges](https://github.com/FormidableLabs/badges) project to learn the advanced next steps of a whole lot more automation and cloud infrastructure complexity!
