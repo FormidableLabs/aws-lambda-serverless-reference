@@ -591,3 +591,8 @@ $ STAGE=sandbox yarn run tf:service:init --reconfigure
 
 [trav_img]: https://api.travis-ci.com/FormidableLabs/aws-lambda-serverless-reference.svg
 [trav_site]: https://travis-ci.com/FormidableLabs/aws-lambda-serverless-reference
+
+
+## Maintenance Status
+
+**Stable:** Formidable is not planning to develop any new features for this project. We are still responding to bug reports and security concerns. We are still welcoming PRs for this project, but PRs that include new features should be small and easy to integrate and should not include breaking changes.
