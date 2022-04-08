@@ -1,6 +1,7 @@
 AWS Lambda Serverless Reference
 ===============================
 [![Travis Status][trav_img]][trav_site]
+[![Maintenance Status][maintenance-image]](#maintenance-status)
 
 A simple "hello world" reference app for the [`FormidableLabs/serverless/aws`][FormidableLabs/serverless/aws] Terraform module, using the [serverless][] framework targeting an AWS Lambda deploy.
 
@@ -596,3 +597,5 @@ $ STAGE=sandbox yarn run tf:service:init --reconfigure
 ## Maintenance Status
 
 **Stable:** Formidable is not planning to develop any new features for this project. We are still responding to bug reports and security concerns. We are still welcoming PRs for this project, but PRs that include new features should be small and easy to integrate and should not include breaking changes.
+
+[maintenance-image]: https://img.shields.io/badge/maintenance-stable-yellow.svg?color=yellow&style=flat
