@@ -47,7 +47,7 @@
   "dependencies": {
     "aws-xray-sdk-core": "^2.2.0",
     "aws-xray-sdk-express": "^2.2.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "serverless-http": "^2.3.0"
   },
   "devDependencies": {
