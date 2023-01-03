@@ -1,4 +1,4 @@
-[![AWS Lambda Serverless Reference — Formidable, We build the modern web](./aws-lambda-serverless-reference-Hero.png)](https://formidable.com/open-source/)
+[![AWS Lambda Serverless Reference — Formidable, We build the modern web](https://raw.githubusercontent.com/FormidableLabs/aws-lambda-serverless-reference/master/aws-lambda-serverless-reference-Hero.png)](https://formidable.com/open-source/)
 
 [![Travis Status][trav_img]][trav_site]
 [![Maintenance Status][maintenance-image]](#maintenance-status)
